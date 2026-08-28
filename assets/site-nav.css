@@ -1,0 +1,32 @@
+/* Neurialab site chrome — one header for every page. Loaded last in <head>
+   so it wins over any older per-page .site-header rules. */
+.site-header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(6, 6, 12, 0.96);
+  border-bottom: 1px solid #272739;
+  backdrop-filter: blur(10px);
+}
+.site-header .wrap {
+  box-sizing: border-box; max-width: 1120px; margin: 0 auto;
+  padding: 6px 1.25rem; min-height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px 16px; flex-wrap: wrap;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em;
+}
+.site-header .brand { color: #7cf7ff; font-weight: 700; text-decoration: none; }
+.site-header .brand .dim { color: #5a5a70; font-weight: 400; }
+.site-header .nav {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 2px 1.05rem;
+}
+.site-header .nav a {
+  margin: 0; padding: 4px 0; color: #8e8eaa; text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.site-header .nav a:hover { color: #7cf7ff; }
+.site-header .nav a:focus-visible { outline: 2px solid #7cf7ff; outline-offset: 3px; }
+.site-header .nav a[aria-current="page"] { color: #f4f4fb; border-bottom-color: #7cf7ff; }
+@media (max-width: 700px) {
+  .site-header .wrap { font-size: 0.66rem; letter-spacing: 0.1em; padding: 8px 1rem; }
+}
+@media print { .site-header { display: none; } }
