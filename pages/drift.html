@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sesefus — Drift Architecture</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap">
+<style>
+/* v3.5.4 chrome */
+body{margin:0;font-family:'Outfit',system-ui;background:radial-gradient(circle at top,#17172a 0%,#050509 55%,#000 100%);color:#e7e7f2}
+.site-header{position:sticky;top:0;background:rgba(6,6,12,0.96);border-bottom:1px solid #272739;backdrop-filter:blur(10px);z-index:50}
+.site-header .wrap{max-width:1120px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:52px;font-family:"JetBrains Mono",monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.16em}
+.brand{color:#7cf7ff;font-weight:700}.nav a{color:#8e8eaa;margin-left:1.1rem;text-decoration:none}.nav a:hover{color:#7cf7ff}
+</style></head><body>
+<header class="site-header"><div class="wrap"><div><span class="brand">⬡ Neurialab</span> <span style="color:#5a5a70">/ Sesefus</span></div>
+<nav class="nav"><a href="../index.html">Home</a><a href="prologue.html">Prologue</a><a href="machine.html">Machine</a><a href="drift.html">Drift</a><a href="cheatsheet.html">Cheatsheet</a><a href="ledger-2026-07-04.html">Ledger</a></nav></div></header>
+<style>
+  :root {
+    --ground: #f4f6f9;
+    --panel: #ffffff;
+    --panel-2: #eef1f6;
+    --inset: #e7ebf1;
+    --line: #dbe1ea;
+    --line-strong: #c3ccd8;
+    --ink: #182030;
+    --ink-soft: #38434f;
+    --muted: #5a6675;
+    --faint: #8a94a2;
+    --accent: #0c8f77;
+    --accent-ink: #0a6f5d;
+    --keystone: #a86608;
+    --gate: #c8324a;
+    --gate-soft: #e8b7bf;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 8px 30px rgba(20,30,45,.05);
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", "Menlo", "Cascadia Mono", "Roboto Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #090c11;
+      --panel: #10151d;
+      --panel-2: #161d28;
+      --inset: #0c1017;
+      --line: #232d3b;
+      --line-strong: #2f3b4c;
+      --ink: #d9dfe8;
+      --ink-soft: #b3bccb;
+      --muted: #8592a3;
+      --faint: #616e7f;
+      --accent: #4fd6b8;
+      --accent-ink: #7fe6cf;
+      --keystone: #f2b544;
+      --gate: #ff7183;
+      --gate-soft: #5a2530;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 40px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #f4f6f9; --panel: #ffffff; --panel-2: #eef1f6; --inset: #e7ebf1;
+    --line: #dbe1ea; --line-strong: #c3ccd8; --ink: #182030; --ink-soft: #38434f;
+    --muted: #5a6675; --faint: #8a94a2; --accent: #0c8f77; --accent-ink: #0a6f5d;
+    --keystone: #a86608; --gate: #c8324a; --gate-soft: #e8b7bf;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 8px 30px rgba(20,30,45,.05);
+  }
+  :root[data-theme="dark"] {
+    --ground: #090c11; --panel: #10151d; --panel-2: #161d28; --inset: #0c1017;
+    --line: #232d3b; --line-strong: #2f3b4c; --ink: #d9dfe8; --ink-soft: #b3bccb;
+    --muted: #8592a3; --faint: #616e7f; --accent: #4fd6b8; --accent-ink: #7fe6cf;
+    --keystone: #f2b544; --gate: #ff7183; --gate-soft: #5a2530;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 40px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: clamp(24px, 5vw, 64px) clamp(18px, 4vw, 40px) 96px; }
+
+  /* ---- type ---- */
+  h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.15; letter-spacing: -.01em; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--accent-ink); font-weight: 600;
+  }
+  p { margin: 0; color: var(--ink-soft); }
+  .lede { font-size: clamp(17px, 2.4vw, 20px); color: var(--ink-soft); max-width: 62ch; }
+  a { color: var(--accent-ink); }
+
+  /* ---- hero ---- */
+  .hero { display: flex; flex-direction: column; gap: 18px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(30px, 6vw, 48px); font-weight: 700; }
+  .hero h1 .dim { color: var(--faint); font-weight: 500; }
+
+  /* nesting diagram */
+  .nest {
+    margin-top: 8px;
+    display: grid;
+    gap: 0;
+    font-family: var(--mono);
+  }
+  .shell {
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    padding: 16px clamp(14px, 3vw, 22px);
+    position: relative;
+    background: color-mix(in srgb, var(--panel) 55%, transparent);
+  }
+  .shell + .shell-inner { margin-top: 12px; }
+  .shell .tag {
+    display: inline-flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  .shell .name { font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+  .shell .role { font-family: var(--sans); font-size: 13.5px; color: var(--muted); }
+  .shell.this {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent) inset, 0 10px 34px -18px var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+  }
+  .shell.this .name { color: var(--accent-ink); }
+  .shell .youarehere {
+    position: absolute; top: -9px; right: 14px;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+    background: var(--accent); color: var(--ground); padding: 2px 8px; border-radius: 20px; font-weight: 700;
+  }
+  .purpose {
+    margin-top: 20px; padding: 18px 20px; border-radius: 12px;
+    background: var(--panel-2); border: 1px solid var(--line);
+    font-size: 15.5px; color: var(--ink-soft);
+  }
+  .purpose b { color: var(--ink); font-weight: 650; }
+  .purpose .k { color: var(--accent-ink); font-weight: 650; }
+
+  /* ---- cull test ---- */
+  .rule {
+    margin: 40px 0; border: none; border-top: 1px solid var(--line);
+  }
+  .cull {
+    display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start;
+    padding: 20px 22px; border-radius: 12px;
+    background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  .cull .idx { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); padding-top: 3px; white-space: nowrap; }
+  .cull .test { font-size: clamp(17px, 2.6vw, 21px); font-weight: 600; color: var(--ink); line-height: 1.35; }
+  .cull .test em { font-style: normal; color: var(--accent-ink); }
+  .cull .sub { margin-top: 8px; font-size: 14px; color: var(--muted); font-family: var(--mono); }
+
+  /* ---- section ---- */
+  section { margin-top: 44px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+  .sec-num {
+    font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--accent);
+    line-height: 1; min-width: 28px;
+  }
+  .sec-head h2 { font-size: clamp(20px, 3.4vw, 26px); font-weight: 700; }
+  .sec-head .kind { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-left: auto; }
+
+  /* item cards */
+  .cards { display: grid; gap: 12px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; display: grid; gap: 5px; box-shadow: var(--shadow);
+  }
+  .card .top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .card .h { font-weight: 650; font-size: 15.5px; color: var(--ink); }
+  .card .sig { font-family: var(--mono); font-size: 12.5px; color: var(--accent-ink); }
+  .card p { font-size: 14px; color: var(--muted); }
+  .card.keystone { border-color: color-mix(in srgb, var(--keystone) 55%, var(--line)); }
+  .card.keystone .h { color: var(--keystone); }
+
+  .flag {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 20px; font-weight: 700; white-space: nowrap;
+  }
+  .flag.key { background: color-mix(in srgb, var(--keystone) 18%, transparent); color: var(--keystone); border: 1px solid color-mix(in srgb, var(--keystone) 40%, transparent); }
+  .flag.warn { background: color-mix(in srgb, var(--gate) 15%, transparent); color: var(--gate); border: 1px solid color-mix(in srgb, var(--gate) 45%, transparent); }
+  .flag.todo { background: var(--inset); color: var(--muted); border: 1px solid var(--line); }
+
+  /* domains */
+  .fam { display: grid; gap: 14px; }
+  .famrow {
+    display: grid; grid-template-columns: 190px 1fr; gap: 16px; align-items: start;
+    padding: 14px 0; border-top: 1px solid var(--line);
+  }
+  .famrow:first-child { border-top: none; }
+  .famrow .flabel { font-weight: 650; font-size: 14.5px; color: var(--ink); padding-top: 4px; }
+  .famrow .flabel span { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-top: 2px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    font-size: 13.5px; padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--line-strong); background: var(--panel); color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .pill.gated { border-color: color-mix(in srgb, var(--gate) 55%, var(--line)); color: var(--gate); }
+  .pill.gated .dot { background: var(--gate); }
+  .pill.open { border-style: dashed; color: var(--faint); background: transparent; }
+  .pill.open .dot { background: var(--faint); }
+
+  /* gate panel */
+  .gate {
+    margin-top: 22px;
+    border: 1px solid color-mix(in srgb, var(--gate) 45%, var(--line));
+    border-radius: 14px; overflow: hidden; box-shadow: var(--shadow);
+    background: var(--panel);
+  }
+  .gate-head {
+    padding: 16px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    background: color-mix(in srgb, var(--gate) 9%, var(--panel));
+    border-bottom: 1px solid color-mix(in srgb, var(--gate) 30%, var(--line));
+  }
+  .gate-head .title { font-weight: 700; font-size: 16.5px; color: var(--ink); }
+  .gate-head .state {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--gate); border: 1px solid color-mix(in srgb, var(--gate) 45%, transparent);
+    padding: 3px 10px; border-radius: 20px; font-weight: 700;
+  }
+  .gate-head .policy { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: auto; }
+  .invs { list-style: none; margin: 0; padding: 6px 20px 12px; display: grid; gap: 0; counter-reset: inv; }
+  .invs li {
+    display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: baseline;
+    padding: 14px 0; border-top: 1px solid var(--line);
+  }
+  .invs li:first-child { border-top: none; }
+  .invs li::before {
+    counter-increment: inv; content: counter(inv);
+    font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--gate);
+    border: 1px solid color-mix(in srgb, var(--gate) 40%, transparent); border-radius: 8px;
+    width: 26px; height: 26px; display: grid; place-items: center;
+  }
+  .invs .it { font-weight: 650; color: var(--ink); font-size: 15px; }
+  .invs .id { color: var(--muted); font-size: 14px; margin-top: 3px; }
+  .invs code { font-family: var(--mono); font-size: .88em; background: var(--inset); padding: 1px 5px; border-radius: 5px; color: var(--ink-soft); }
+
+  /* table */
+  .tablewrap { margin-top: 18px; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; background: var(--panel); }
+  caption { text-align: left; font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 14px 16px 0; }
+  th, td { text-align: left; padding: 13px 16px; font-size: 14.5px; vertical-align: top; }
+  thead th { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; border-bottom: 1px solid var(--line-strong); }
+  tbody tr + tr td { border-top: 1px solid var(--line); }
+  td .need { font-weight: 600; color: var(--ink); }
+  td .mech { color: var(--accent-ink); font-weight: 600; }
+  td .fr { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+
+  .contract {
+    margin-top: 14px; font-family: var(--mono); font-size: 14px;
+    background: var(--inset); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px; color: var(--ink-soft); overflow-x: auto;
+  }
+  .contract b { color: var(--accent-ink); font-weight: 700; }
+
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12px; color: var(--faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+  a:focus-visible, li:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  @media (max-width: 620px) {
+    .cull { grid-template-columns: 1fr; }
+    .famrow { grid-template-columns: 1fr; gap: 8px; }
+    .invs li { grid-template-columns: 1fr; gap: 6px; }
+    .invs li::before { display: none; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Context map · drift architecture</span>
+    <h1>sesefus <span class="dim">— the voice layer that measures drift and closes the loop</span></h1>
+    <p class="lede">One container for everything we've decided: three nested shells, four buckets, and the invariants that keep the sensitive parts safe. This is the spec the fresh directory gets built against.</p>
+
+    <div class="nest" aria-label="System nesting: ssfs inside sesefus inside sesephus">
+      <div class="shell">
+        <span class="tag"><span class="name">sesephus</span><span class="role">the magnum opus — desktop, offline, overnight behavioral inference</span></span>
+        <div class="nest" style="margin-top:12px;">
+          <div class="shell this">
+            <span class="youarehere">this directory</span>
+            <span class="tag"><span class="name">sesefus</span><span class="role">voice-access backbones + prerequisites · feeds sesephus</span></span>
+            <div class="nest" style="margin-top:12px;">
+              <div class="shell">
+                <span class="tag"><span class="name">ssfs</span><span class="role">CLI backbones — every action routes through here</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="purpose">Everything in all three shells exists for one job: <b>produce a drift metric</b> and <b>close a drift-correction loop</b>, <span class="k">in every domain</span>. sesefus doesn't <em>contain</em> the magnum opus — it feeds it.</p>
+  </header>
+
+  <hr class="rule">
+
+  <div class="cull">
+    <div class="idx">The cull test</div>
+    <div>
+      <div class="test">Does this file either <em>carry voice into the system</em>, or <em>produce, feed, or surface a drift signal</em> sesephus can correct against?</div>
+      <div class="sub">yes → it's a backbone, port it · no → dead plumbing, cut it</div>
+    </div>
+  </div>
+
+  <!-- BUCKET 1 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">①</span>
+      <h2>Substrate</h2>
+      <span class="kind">the layer itself — not domains</span>
+    </div>
+    <div class="cards">
+      <div class="card keystone">
+        <div class="top"><span class="h">config / comprehension drift</span><span class="flag key">keystone · #1 · unbuilt</span></div>
+        <p>Voice-native configuration that doesn't bore the user. Different users comprehend audio at different rates — so don't <em>set</em> the rate, <em>measure the mismatch</em> between delivery and comprehension (re-asks, latency, barge-in) and let it self-calibrate. Config becomes a drift signal like any other.</p>
+      </div>
+      <div class="card">
+        <div class="top"><span class="h">voice I/O</span></div>
+        <p>Capture and speak-back — the Zig client plus adaptive-rate delivery. The channel every domain talks through.</p>
+      </div>
+      <div class="card">
+        <div class="top"><span class="h">the vault</span></div>
+        <p>Encrypted local store (ChaCha20-Poly1305). Zig host is the source of truth for state.</p>
+      </div>
+      <div class="card">
+        <div class="top"><span class="h">the metric surface</span></div>
+        <p>Where drift is shown and spoken back — dashboard + voice. The place the loop reports to.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUCKET 2 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">②</span>
+      <h2>Cross-cutting services</h2>
+      <span class="kind">used by every domain, owned by none</span>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="top"><span class="h">the domain contract</span><span class="sig">signal() → score() → correct()</span></div>
+        <p>The uniform plugin shape. Every drift domain conforms to it, so a new domain is a new folder — not a new architecture. ETDI is the reference implementation.</p>
+      </div>
+      <div class="card">
+        <div class="top"><span class="h">context sieve</span><span class="flag todo">wire the return</span></div>
+        <p>PCA (spiffy_prune / tapestry) — sieves everything down to usable tidbits before any domain scores it. "Worked ish, but never interfaced with its return." First task: surface its output.</p>
+      </div>
+      <div class="card">
+        <div class="top"><span class="h">disclosure gate</span><span class="flag warn">safety-critical</span></div>
+        <p>Gates <em>sensitive</em> domains behind explicit consent. Detailed below — five invariants, default state sealed.</p>
+      </div>
+      <div class="card">
+        <div class="top"><span class="h">hard erasure</span></div>
+        <p>A distinct primitive, not a gate state. Deliberate, high-friction total deletion — the honest escape hatch, kept hard so it's never a low-willingness impulse.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUCKET 3 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">③</span>
+      <h2>Drift domains</h2>
+      <span class="kind">open-ended — all conform to the contract</span>
+    </div>
+    <div class="fam">
+      <div class="famrow">
+        <div class="flabel">Affective<span>mood &amp; feeling</span></div>
+        <div class="pills">
+          <span class="pill"><span class="dot"></span>mood</span>
+          <span class="pill"><span class="dot"></span>reaction</span>
+          <span class="pill"><span class="dot"></span>emotional (ETDI)</span>
+        </div>
+      </div>
+      <div class="famrow">
+        <div class="flabel">Linguistic / output<span>rate &amp; texture of speech</span></div>
+        <div class="pills">
+          <span class="pill"><span class="dot"></span>syllable / message</span>
+          <span class="pill"><span class="dot"></span>syllable / day</span>
+          <span class="pill gated"><span class="dot"></span>porosity · gated</span>
+        </div>
+      </div>
+      <div class="famrow">
+        <div class="flabel">Temporal / physical<span>time &amp; place</span></div>
+        <div class="pills">
+          <span class="pill"><span class="dot"></span>circadian</span>
+          <span class="pill"><span class="dot"></span>arrival (SaturnNav)</span>
+        </div>
+      </div>
+      <div class="famrow">
+        <div class="flabel">Life domains<span>domains of living</span></div>
+        <div class="pills">
+          <span class="pill"><span class="dot"></span>employment (LeadLogic)</span>
+        </div>
+      </div>
+      <div class="famrow">
+        <div class="flabel">Cognitive<span>attention &amp; context</span></div>
+        <div class="pills">
+          <span class="pill"><span class="dot"></span>context (PCA sieve)</span>
+        </div>
+      </div>
+      <div class="famrow">
+        <div class="flabel">Open slots<span>"I could go on…"</span></div>
+        <div class="pills">
+          <span class="pill open"><span class="dot"></span>health?</span>
+          <span class="pill open"><span class="dot"></span>finance?</span>
+          <span class="pill open"><span class="dot"></span>relational?</span>
+          <span class="pill open"><span class="dot"></span>attention?</span>
+          <span class="pill open"><span class="dot"></span>memory?</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUCKET 4 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">④</span>
+      <h2>Correction</h2>
+      <span class="kind">how a scored drift becomes an action</span>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="top"><span class="h">the loop</span><span class="flag todo">mostly implicit today</span></div>
+        <p>Turns "you've drifted" into a cue, a prompt, or a schedule change. The least-defined bucket — it firms up once domains are actually emitting scores.</p>
+      </div>
+      <div class="card">
+        <div class="top"><span class="h">willingness</span><span class="sig">modulator, not a domain</span></div>
+        <p>Governs how hard the loop pushes. Porosity feeds it: post-run, speech slows → willingness low → <em>back off, don't nag</em>. The gated signal's real job isn't to catch anyone — it's to stop pushing at the moment pushing would hurt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GATE DETAIL -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num" style="color:var(--gate)">⚠</span>
+      <h2>The disclosure gate</h2>
+      <span class="kind">inherited by any sensitive domain</span>
+    </div>
+    <p style="max-width:64ch; color:var(--muted); font-size:15px;">Porosity — speech slowing as a post-run adrenaline tail fades — can indicate state, but only for a user who has <b style="color:var(--ink-soft)">said so</b>. That rule isn't a porosity rule; it's a system primitive every stigmatized signal inherits. Tagged: <code style="font-family:var(--mono);font-size:13px;color:var(--gate)">disclosure-gated · durable · never-measure-until-open</code>.</p>
+
+    <div class="gate">
+      <div class="gate-head">
+        <span class="title">Gate invariants</span>
+        <span class="state">default: sealed</span>
+        <span class="policy">policy: never-measure-until-open</span>
+      </div>
+      <ol class="invs">
+        <li><div><div class="it">Detection ≠ permission.</div><div class="id">A sealed domain's signal is <em>inadmissible</em> — never scored, surfaced, spoken, or used to assume status. <code>can-measure</code> and <code>may-use</code> are decoupled.</div></div></li>
+        <li><div><div class="it">The system never opens the gate.</div><div class="id">It never initiates. It never says "you seem to be using." Disclosure is the user's act — the system only ever <em>receives</em> it.</div></div></li>
+        <li><div><div class="it">Opening requires deliberate, verified intent.</div><div class="id">An affirmative flow where it's unmistakable the user <em>knows</em> they're disclosing — a confirmation step, not a keyword trigger.</div></div></li>
+        <li><div><div class="it">Accidental utterance does nothing.</div><div class="id">If the info falls out in speech, the gate stays sealed. Overhearing is not consent.</div></div></li>
+        <li><div><div class="it">Disclosure is durable.</div><div class="id">Once made, it's remembered and acted on. It does not re-seal on impulse — holding it steady <em>is</em> the duty of care.</div></div></li>
+      </ol>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <caption>Three mechanisms — and why none of them is "revoke"</caption>
+        <thead><tr><th scope="col">The need</th><th scope="col">Mechanism</th><th scope="col">Friction</th></tr></thead>
+        <tbody>
+          <tr><td><span class="need">"Leave me alone right now"</span></td><td><span class="mech">willingness backoff</span> — automatic, temporary</td><td><span class="fr">none — it just happens</span></td></tr>
+          <tr><td><span class="need">"Remember I'm in recovery"</span></td><td><span class="mech">durable disclosure</span> — the duty</td><td><span class="fr">opens once, stays</span></td></tr>
+          <tr><td><span class="need">"Destroy the record entirely"</span></td><td><span class="mech">hard erasure</span> — deliberate, separate</td><td><span class="fr">intentional, never impulsive</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px; font-size:14px; color:var(--muted); max-width:64ch;">Willingness delivers the relief that revocation was reaching for — softly, automatically, without ever forgetting. So nothing traps the user, and nothing casually forgets them.</p>
+  </section>
+
+  <footer>
+    <span>sesefus · drift-domains context map</span>
+    <span>ssfs ⊂ sesefus ⊂ sesephus</span>
+  </footer>
+
+</div>
+
+</body></html><footer style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5a5a70;margin:40px 0 60px">Curated public excerpts. Neurialab builds drift-correction instruments; Sesefus is the first.</footer></body></html>

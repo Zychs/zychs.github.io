@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sisyphus, Flipped • Sesefus Public Excerpts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap">
+<style>
+  :root { --accent:#7cf7ff; --border:#272739; --cyan:#7cf7ff; }
+  html,body { margin:0; padding:0; }
+  body {
+    background:
+      radial-gradient(120% 80% at 18% -10%, rgba(124,247,255,0.07), transparent 60%),
+      radial-gradient(140% 90% at 100% 8%, rgba(124,247,255,0.05), transparent 55%),
+      linear-gradient(180deg, #17172a 0%, #050509 55%, #000 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #e7e7f2;
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
+  header { position: sticky; top:0; z-index: 50; background: rgba(6,6,12,0.96); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); }
+  .hdr { display:flex; align-items:center; justify-content:space-between; height:54px; font-family: 'JetBrains Mono', monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .16em; }
+  .brand { color: var(--accent); font-weight: 700; }
+  .nav a { color:#8e8eaa; margin-left: 1.15rem; text-decoration:none; }
+  .nav a:hover { color: #7cf7ff; }
+
+  .hero { padding: 48px 0 32px; text-align: center; }
+  .hero .kicker { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:rgba(124,247,255,.7); }
+  .hero h1 { font-family:'JetBrains Mono',monospace; font-size: clamp(36px,6.5vw,58px); font-weight:700; line-height:1.02; margin:12px 0 12px; letter-spacing:.01em; text-transform:uppercase; }
+  .hero p { max-width: 38rem; margin: 0 auto; color:#a7a7bd; font-size:17px; line-height:1.5; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; padding: 20px 0 60px; }
+  .card {
+    display:block; text-decoration:none; color:inherit;
+    background: #10151d; border:1px solid #272739; border-radius:14px; padding:18px 18px 16px;
+    transition: transform .12s ease, border-color .12s;
+  }
+  .card:hover { transform: translateY(-1px); border-color: #7cf7ff; }
+  .card .eyebrow { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#6c6c83; }
+  .card h3 { margin:6px 0 8px; font-size:17px; font-weight:600; color:#f4f4fb; }
+  .card p { margin:0; font-size:13.5px; color:#8592a3; line-height:1.4; }
+  .card .tag { display:inline-block; margin-top:10px; font-size:10px; padding:1px 7px; border-radius:999px; border:1px solid rgba(124,247,255,.25); color:#9fe9f1; }
+
+  .note { max-width:640px; margin: 20px auto 60px; font-size:12px; color:#6c6c83; font-family:'JetBrains Mono',monospace; text-align:center; }
+  footer { text-align:center; padding:30px 0 50px; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#5a5a70; font-family:'JetBrains Mono',monospace; border-top:1px solid #272739; }
+  .accent { color:#7cf7ff; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hdr">
+    <div><span class="brand">⬡ Neurialab</span> <span style="color:#4a4a5f">/ Sesefus</span></div>
+    <nav class="nav">
+      <a href="#/">Home</a>
+      <a href="instruments.html">Instruments</a>
+      <a href="circadia.html">Circadia</a>
+      <a href="artifact-scanner.html">Scanner</a>
+      <a href="prologue.html">Prologue</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">⬡ Public excerpts • video demo ready</div>
+    <h1>Sisyphus,<br>Flipped</h1>
+    <p>Circadian entrainment, audio journaling, and AI as a cognitive prosthetic.<br>
+    <span style="color:#7cf7ff">Neurialab builds drift-correction instruments. Circadia keeps time. Scanner finds the work. Sesefus journals.</span></p>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="n-ai-ssance.html">
+      <div class="eyebrow">Public · MIT</div>
+      <h3>n-ai-ssance</h3>
+      <p>Free Grok skill library on theRensisioure. Map · scan · reconstruct · intent · land. Breadcrumb to the paid hosts.</p>
+      <span class="tag">skills</span>
+    </a>
+
+    <a class="card" href="instruments.html">
+      <div class="eyebrow">Portfolio · 2026-08-12</div>
+      <h3>Instruments</h3>
+      <p>Unified public door. Circadia (not done). Artifact Scanner (nearly done). Sesefus vision. Siblings, not one app.</p>
+      <span class="tag">portfolio</span>
+    </a>
+
+    <a class="card" href="circadia.html">
+      <div class="eyebrow">Zig · not done</div>
+      <h3>Circadia</h3>
+      <p>Alarm daemon. Scheduler wired. Product not finished. Own door — not a Sesefus footnote.</p>
+      <span class="tag">alarms</span>
+    </a>
+
+    <a class="card" href="artifact-scanner.html">
+      <div class="eyebrow">Windows · nearly done</div>
+      <h3>Artifact Scanner</h3>
+      <p>Finds Grok · Claude · Cursor sessions. Map, not chat dump. Does not host Circadia.</p>
+      <span class="tag">finder</span>
+    </a>
+
+    <a class="card" href="prologue.html">
+      <div class="eyebrow">Origin • 2026-06-14</div>
+      <h3>Sisyphus, Flipped</h3>
+      <p>The public vision essay. Why a phone replacement that remembers time is more powerful than therapy that erases it.</p>
+      <span class="tag">essay</span>
+    </a>
+
+    <a class="card" href="machine.html">
+      <div class="eyebrow" style="color:#4fd6b8">Hub • State of the Machine</div>
+      <h3>Behold The Machine</h3>
+      <p>Master composition: drift, ETDI, fleet, session state, command surface, disclosure gates. The spine of the public site.</p>
+      <span class="tag" style="color:#4fd6b8;border-color:#4fd6b8">teal / drift</span>
+    </a>
+
+    <a class="card" href="drift.html">
+      <div class="eyebrow" style="color:#4fd6b8">Architecture</div>
+      <h3>Drift Architecture</h3>
+      <p>Cull tests, nesting shells, disclosure gate, semantic inheritance. How we constrain drift in the system and the self.</p>
+      <span class="tag" style="color:#4fd6b8;border-color:#4fd6b8">teal</span>
+    </a>
+
+    <a class="card" href="cheatsheet.html">
+      <div class="eyebrow" style="color:#f0b37c">Surface</div>
+      <h3>Command Cheatsheet</h3>
+      <p>Full ssfs / sesefus CLI surface with wired / stub / legacy tags. One binary, host+client roles, Stoic + rhythm + vault verbs.</p>
+      <span class="tag" style="color:#f0b37c;border-color:#f0b37c">amber / commands</span>
+    </a>
+
+    <a class="card" href="ledger-2026-07-04.html">
+      <div class="eyebrow" style="color:#f0937c">Ledger • 2026-07-04</div>
+      <h3>Session Ledger</h3>
+      <p>What we made and what's next. Shipped items, locked decisions, open loops, pitch kit, tester roadmap.</p>
+      <span class="tag" style="color:#f0937c;border-color:#f0937c">ember / ledger</span>
+    </a>
+  </div>
+
+  <div class="note">
+    All pages are standalone canonical HTML artifacts extracted from source. No JS re-rendering of long prose.<br>
+    <strong>Curated public excerpts only.</strong> Full source, private journals, and raw ledgers live in the repos.
+  </div>
+</div>
+
+<footer>
+  <span class="accent">Neurialab</span> • drift-correction instruments • <a href="https://github.com/Zychs/sesefus" style="color:inherit">github.com/Zychs/sesefus</a> + <a href="https://github.com/Zychs/repo-libs-naissance" style="color:inherit">repo-libs-naissance</a><br>
+  Style anchor: neurialab-web v3.5.4
+</footer>
+
+<script>
+// Thin router for hash support (optional). Direct links above are primary and canonical.
+(function(){
+  function go(p){ window.location.href = p + '.html'; }
+  window.addEventListener('hashchange', function(){
+    const h = location.hash.replace('#/','');
+    if (h==='prologue') go('prologue');
+    else if (h==='machine' || h==='') go('machine');
+    else if (h==='drift') go('drift');
+    else if (h==='cheatsheet') go('cheatsheet');
+    else if (h==='ledger' || h==='ledger-2026-07-04') go('ledger-2026-07-04');
+  });
+  // If someone lands on #/something, jump once
+  if (location.hash.length > 2) setTimeout(function(){ window.dispatchEvent(new HashChangeEvent('hashchange')); }, 40);
+})();
+</script>
+</body>
+</html>

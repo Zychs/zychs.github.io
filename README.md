@@ -1,62 +1,87 @@
-# Sisyphus, Flipped
+# Sisyphus, Flipped — Sesefus Public Excerpts
 
-Circadian entrainment, audio journaling, and AI as a cognitive prosthetic.
+**Canonical HTML artifacts site.** Zero-build. GitHub Pages ready.
 
-A prologue project exploring **Sesefus** — AI-augmented recovery tools for individuals in therapeutic settings and beyond.
+**Live:** https://zychs.github.io
 
-**View the site:** https://zychs.github.io
+Neurialab builds drift-correction instruments; Sesefus is the first.
 
-## Project
+## Structure (canonical hierarchy)
 
-This repository hosts the project prologue and documentation for Sesefus, a comprehensive system built around:
-
-- **Circadian entrainment** through structured audio journaling
-- **Rich alarm scheduling** with profile-based management
-- **Local-first AI inference** for cognitive augmentation
-- **Voice-first interfaces** for accessibility in restricted environments
-
-## Contents
-
-- `index.html` — Full prologue essay with design and typographic styling
-- `support.js` — Minimal supporting script
-- `README.md` — This file
-
-## Development
-
-To run locally:
-
-```bash
-# Clone the repository
-git clone https://github.com/zychs/zychs.github.io
-cd zychs.github.io
-
-# Serve with a local server (Python)
-python -m http.server 8000
-
-# Or with Node.js
-npx http-server
+```
+index.html                 — video-friendly home + cards (direct links)
+pages/
+  resume.html              - J.D. Bardwell professional resume + work links
+  instruments.html         — unified portfolio (Circadia · Scanner · Sesefus)
+  circadia.html            — Circadia public door (Zig alarms, not done)
+  artifact-scanner.html    — Artifact Scanner public door (nearly done)
+  n-ai-ssance.html         — n-ai-ssance public Grok skill library (MIT)
+  prologue.html            — Sisyphus, Flipped (origin essay)
+  machine.html             — State of the Machine (master hub)
+  drift.html               — Drift Architecture
+  cheatsheet.html          — Command Cheatsheet (ssfs surface)
+  ledger-2026-07-04.html   — Session Ledger 07·04
+assets/
+  JD-Bardwell-Resume-UX-QA-Accessibility.pdf - downloadable one-page resume
 ```
 
-Then visit `http://localhost:8000` in your browser.
+- Each `pages/*.html` is a **standalone canonical document** (extracted from quick context artifacts).
+- Router / nav loads the real files (no prose duplicated in support.js or templates).
+- Style & layout strictly anchored to **neurialab-web v3.5.4** (tokens, header treatment, spacing, cyan #7cf7ff, dark radial bg, JetBrains Mono + Outfit).
 
-## Architecture Overview
+## Pages + roles
 
-- **Host + Client Model** — Scalable audio capture and processing
-- **Local Inference** — vLLM integration for local language model support
-- **Vault Storage** — Encrypted audio and artifact databases
-- **TCP-based Communication** — Low-latency client-server messaging
+| Page                    | Role                              | Accent |
+|-------------------------|-----------------------------------|--------|
+| resume.html             | Professional profile + resume     | cyan   |
+| prologue.html           | Public vision essay               | —      |
+| machine.html            | Hub / spine (links to children)   | teal   |
+| drift.html              | Architecture + disclosure gate    | teal   |
+| cheatsheet.html         | Full CLI surface (wired/stub)     | amber  |
+| ledger-2026-07-04.html  | Dated decisions + pitch kit       | ember  |
 
-## Technologies
+## Local dev
 
-- **Language:** HTML5 + CSS3, JavaScript
-- **Fonts:** Outfit (body), JetBrains Mono (code/headings)
-- **Styling:** Custom gradient backgrounds with responsive typography
+```bash
+cd /mnt/c/dev/zychs.github.io   # or C:\dev\zychs.github.io
+python -m http.server 8000
+# open http://localhost:8000
+```
 
-## Related Work
+Works with any static server. No build step for GitHub Pages.
 
-- **Core Engine:** Zig-based Circadia/Sesefus alarm system
-- **Inference Layer:** Crow-9B-HERETIC via local vLLM
-- **Infrastructure:** LeadLogic-Engine for embedding and reflection
+## Source of truth (Tier A artifacts)
+
+Extracted from Desktop "quick context":
+
+- `Sisyphus Flipped - Prologue.dc.html` (clean)
+- `Sesefus — State of the Machine_files/saved_resource.html`
+- `sesefus — drift architecture.html` (inner) + zychs copy
+- `Sesefus - Quick CLI Ledger .../67abc7af...html`
+- `Sesefus — Session Ledger 07·04_files/saved_resource.html`
+
+**quicker context capsules** are fact references (point to sections in the pages above).
+
+**sesefus repo + repo-libs-naissance** = engineering truth.
+
+## Sync note (2026-07-11)
+
+- Pages extracted and wrapped with v3.5.4 chrome.
+- Home is now thin cards → real pages.
+- support.js thinned (no long prose copies).
+- Disclosure + Neurialab line present on every page.
+
+Cross-checked against:
+- `/home/justavision/sesefus` + `/home/justavision/zychs/repo-libs-naissance`
+- Equivalent Windows dev paths
+
+No content invented. All prose from the artifacts or their synced capsules.
+
+## IP / disclosure (mandatory)
+
+- Public excerpts only.
+- Prominent note on every page.
+- One line: **Neurialab builds drift-correction instruments; Sesefus is the first.**
 
 ---
 

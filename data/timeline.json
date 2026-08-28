@@ -1,0 +1,127 @@
+{
+  "grain": "public_doors_plus_anonymized_pushes",
+  "note": "Named nodes carry date + branch slug from public site doors. Dust is GitHub push days with no repo, sha, or message.",
+  "span": ["2026-06-01", "2026-08-22"],
+  "domains": [
+    {
+      "id": "circadia",
+      "name": "Circadia",
+      "role": "keeps time",
+      "status": "not done",
+      "href": "pages/circadia.html",
+      "tone": "teal",
+      "marks": [
+        {
+          "d": "2026-08-12",
+          "k": "public door",
+          "branch": "circadia/public-door",
+          "l": "scheduler wired · product is not",
+          "href": "pages/circadia.html"
+        }
+      ]
+    },
+    {
+      "id": "scanner",
+      "name": "Scanner",
+      "role": "finds the work",
+      "status": "nearly done",
+      "href": "pages/artifact-scanner.html",
+      "tone": "amber",
+      "marks": [
+        {
+          "d": "2026-08-12",
+          "k": "public door",
+          "branch": "scanner/public-door",
+          "l": "maps sessions · does not dump chats",
+          "href": "pages/artifact-scanner.html"
+        }
+      ]
+    },
+    {
+      "id": "sesefus",
+      "name": "Sesefus",
+      "role": "journals",
+      "status": "first public excerpt",
+      "href": "pages/prologue.html",
+      "tone": "cyan",
+      "marks": [
+        {
+          "d": "2026-06-14",
+          "k": "origin",
+          "branch": "sesefus/prologue",
+          "l": "Sisyphus, Flipped",
+          "href": "pages/prologue.html"
+        },
+        {
+          "d": "2026-06-24",
+          "k": "excerpts site",
+          "branch": "sesefus/excerpts-site",
+          "l": "public pages stand up",
+          "href": "pages/prologue.html"
+        },
+        {
+          "d": "2026-07-04",
+          "k": "ledger",
+          "branch": "sesefus/ledger-07-04",
+          "l": "session ledger 07·04",
+          "href": "pages/ledger-2026-07-04.html"
+        },
+        {
+          "d": "2026-07-05",
+          "k": "cheatsheet",
+          "branch": "sesefus/cheatsheet",
+          "l": "CLI surface snapshot",
+          "href": "pages/cheatsheet.html"
+        },
+        {
+          "d": "2026-07-11",
+          "k": "machine",
+          "branch": "sesefus/machine",
+          "l": "state of the machine",
+          "href": "pages/machine.html"
+        },
+        {
+          "d": "2026-07-11",
+          "k": "drift",
+          "branch": "sesefus/drift",
+          "l": "drift architecture",
+          "href": "pages/drift.html"
+        },
+        {
+          "d": "2026-08-12",
+          "k": "peer stance",
+          "branch": "sesefus/peer-stance",
+          "l": "sibling, not the parent",
+          "href": "pages/instruments.html"
+        }
+      ]
+    },
+    {
+      "id": "naissance",
+      "name": "n-ai-ssance",
+      "role": "skill trail",
+      "status": "public · MIT",
+      "href": "pages/n-ai-ssance.html",
+      "tone": "rose",
+      "marks": [
+        {
+          "d": "2026-08-12",
+          "k": "v1.0.0",
+          "branch": "n-ai-ssance/v1.0.0",
+          "l": "five Grok skills · MIT",
+          "href": "pages/n-ai-ssance.html"
+        }
+      ]
+    }
+  ],
+  "dust": [
+    {"d": "2026-08-03", "n": 1},
+    {"d": "2026-08-04", "n": 1},
+    {"d": "2026-08-10", "n": 4},
+    {"d": "2026-08-11", "n": 1},
+    {"d": "2026-08-13", "n": 4},
+    {"d": "2026-08-15", "n": 1},
+    {"d": "2026-08-17", "n": 24},
+    {"d": "2026-08-18", "n": 5}
+  ]
+}

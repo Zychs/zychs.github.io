@@ -1,211 +1,656 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sisyphus, Flipped — Sesefus Prologue</title>
+<title>Zychs — four domains, portrait</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap');
+:root {
+  --ink: #e7e7f2; --ink-strong: #f4f4fb; --ink-soft: #a7a7bd; --ink-mute: #6c6c83; --ink-faint: #5a5a70;
+  --cyan: #7cf7ff; --cyan-soft: #9fe9f1; --cyan-deep: #28A2B2;
+  --teal: #4fd6b8; --amber: #e2a24a; --ember: #f0937c; --rose: #ff7183;
+  --line: #272739;
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+  --body: 'Outfit', 'Avenir Next', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --tone-teal: var(--teal);
+  --tone-amber: var(--amber);
+  --tone-cyan: var(--cyan);
+  --tone-rose: var(--rose);
+  --gutter: 4.6rem;
+  --scroll: 0;
+}
+* { box-sizing: border-box; }
+html { background: #050509; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.45;
+  background: #050509;
+}
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -30% -20%;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  background:
+    radial-gradient(42% 36% at calc(38% + var(--scroll) * 18%) calc(8% + var(--scroll) * 42%), rgba(124,247,255,0.16), transparent 70%),
+    radial-gradient(38% 32% at calc(78% - var(--scroll) * 14%) calc(36% + var(--scroll) * 28%), rgba(79,214,184,0.10), transparent 68%),
+    radial-gradient(48% 40% at calc(22% + var(--scroll) * 10%) calc(78% - var(--scroll) * 20%), rgba(255,113,131,0.09), transparent 72%);
+  animation: washA 26s ease-in-out infinite alternate;
+  filter: blur(8px);
+}
+body::after {
+  background:
+    radial-gradient(36% 30% at calc(62% - var(--scroll) * 16%) calc(18% + var(--scroll) * 36%), rgba(226,162,74,0.08), transparent 70%),
+    linear-gradient(180deg,
+      rgba(20,20,40,0.92) 0%,
+      rgba(7,7,14,0.55) 42%,
+      rgba(0,0,0,0.88) 100%);
+  animation: washB 34s ease-in-out infinite alternate;
+}
+@keyframes washA {
+  from { transform: translate3d(-3%, -2%, 0) scale(1); }
+  to { transform: translate3d(4%, 3%, 0) scale(1.08); }
+}
+@keyframes washB {
+  from { transform: translate3d(2%, 1%, 0); opacity: 0.92; }
+  to { transform: translate3d(-3%, 4%, 0); opacity: 1; }
+}
+/* portrait frame — even on a wide monitor this is a tall page */
+.page {
+  position: relative;
+  z-index: 1;
+  width: min(920px, 100%);
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 0 0 48px;
+}
 
-  html, body {
-    margin: 0;
-    padding: 0;
-  }
+.mast {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 18px 18px 0;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(124,247,255,0.85);
+}
+.mast .sep { color: #2e2e3e; }
+.mast a { color: inherit; text-decoration: none; }
+.mast a:hover { color: var(--cyan); }
+.mast .resume-door {
+  margin-left: auto;
+  padding: 7px 10px;
+  border: 1px solid rgba(124,247,255,0.34);
+  border-radius: 7px;
+  color: var(--cyan);
+}
+.mast .resume-door:hover { border-color: var(--cyan); color: #050509; background: var(--cyan); }
 
-  body {
-    background:
-      radial-gradient(120% 80% at 18% -10%, rgba(124,247,255,0.07), transparent 60%),
-      radial-gradient(140% 90% at 100% 8%, rgba(124,247,255,0.05), transparent 55%),
-      linear-gradient(180deg, #17172a 0%, #050509 55%, #000 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-  }
+.head { padding: 12px 18px 10px; }
+h1 {
+  font-family: var(--mono); font-weight: 700;
+  font-size: clamp(22px, 5vw, 32px); line-height: 0.95; letter-spacing: 0.02em;
+  text-transform: uppercase; margin: 0;
+  color: var(--ink-strong);
+}
+.standfirst {
+  margin: 8px 0 0; max-width: 28rem;
+  font-size: 15px; line-height: 1.35; color: var(--ink-soft);
+}
+.stats { display: flex; gap: 22px; margin-top: 14px; font-family: var(--mono); }
+.stats .n { font-weight: 700; font-size: 20px; color: var(--cyan); font-variant-numeric: tabular-nums; line-height: 1; }
+.stats .l { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); margin-top: 4px; }
+.profile-door {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  margin-top: 18px; padding: 12px 14px;
+  border: 1px solid rgba(124,247,255,0.18); border-radius: 9px;
+  background: rgba(7,7,14,0.58); text-decoration: none;
+}
+.profile-door:hover { border-color: rgba(124,247,255,0.55); background: rgba(124,247,255,0.06); }
+.profile-door strong { display: block; color: var(--ink-strong); font-size: 15px; }
+.profile-door span { display: block; margin-top: 2px; color: var(--ink-mute); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+.profile-door b { color: var(--cyan); font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
 
-  @page {
-    size: letter;
-    margin: 0;
-  }
+.chart {
+  position: relative;
+  isolation: isolate;
+  margin-top: 4px;
+}
+.field::before {
+  content: "2026";
+  position: absolute; right: 2%; top: 36%;
+  font-family: var(--mono); font-weight: 700;
+  font-size: clamp(96px, 28vw, 200px); line-height: 0.75;
+  letter-spacing: -0.07em;
+  color: rgba(124,247,255,0.045);
+  pointer-events: none;
+  z-index: 0;
+}
 
-  @media print {
-    html {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    html, body {
-      margin: 0;
-      padding: 0;
-    }
-    .doc {
-      max-width: none !important;
-      margin: 0 !important;
-      padding: 0 0.7in !important;
-      box-shadow: none !important;
-    }
-    .hdr-space, .ftr-space {
-      display: table-cell !important;
-      height: 0.7in;
-    }
-    h1, h2, h3 {
-      break-after: avoid;
-    }
-    .keep, blockquote, li {
-      break-inside: avoid;
-    }
-    p, li {
-      orphans: 3;
-      widows: 3;
-    }
-    .screen-only {
-      display: none !important;
-    }
-  }
+.heads {
+  position: sticky; top: 0; z-index: 12;
+  display: grid;
+  grid-template-columns: var(--gutter) 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 0;
+  background: linear-gradient(180deg, rgba(7,7,14,0.96) 70%, rgba(7,7,14,0.72) 100%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(124,247,255,0.12);
+  padding: 8px 8px 6px 0;
+}
+.heads .spine {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-faint); align-self: end; padding: 0 8px 6px 12px;
+  grid-row: 1;
+}
+.colhead {
+  display: flex; flex-direction: column; align-items: center; justify-content: end;
+  text-align: center; text-decoration: none; color: inherit;
+  min-height: 4.6rem; padding: 4px 4px 0;
+  grid-row: 1;
+}
+.colhead .word {
+  font-family: var(--body); font-weight: 800;
+  font-size: clamp(18px, 3.4vw, 34px);
+  line-height: 0.86; letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone) 88%, #fff 12%);
+  text-shadow: 0 0 22px color-mix(in srgb, var(--tone) 35%, transparent);
+}
+.colhead .meta {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--tone) 50%, var(--ink-mute));
+  margin-top: 5px;
+}
+.colhead:hover .word { color: #fff; }
+.colhead:focus-visible { outline: 2px solid var(--tone); outline-offset: 3px; }
+
+.field {
+  position: relative;
+  z-index: 1;
+  min-height: 1800px;
+}
+.bands, .days, .dust, .now, .rails, .specks {
+  position: absolute; inset: 0 0 0 var(--gutter);
+  pointer-events: none;
+}
+.bands { z-index: 0; }
+.band {
+  position: absolute; left: 0; right: 0;
+  border-top: 0;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+}
+.band.jun { background: linear-gradient(180deg, rgba(124,247,255,0), rgba(124,247,255,0.08), rgba(79,214,184,0.03)); }
+.band.jul { background: linear-gradient(180deg, rgba(79,214,184,0.02), rgba(226,162,74,0.07), rgba(240,147,124,0.03)); }
+.band.aug { background: linear-gradient(180deg, rgba(226,162,74,0.03), rgba(255,113,131,0.08), rgba(124,247,255,0.02)); }
+.band .lab {
+  position: sticky; top: 76px;
+  font-family: var(--mono); font-weight: 700;
+  font-size: clamp(28px, 7vw, 52px); letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(231,231,242,0.14);
+  padding: 8px 0 0 10px;
+  pointer-events: none;
+}
+.band .sub {
+  display: block;
+  font-size: 9px; letter-spacing: 0.18em; font-weight: 400;
+  color: var(--ink-faint); margin-top: 2px;
+}
+
+.month-spine {
+  position: absolute; left: 0; width: var(--gutter); top: 0; bottom: 0;
+  z-index: 2; pointer-events: none;
+}
+.spine-lab {
+  position: absolute; left: 0; right: 0;
+  font-family: var(--mono); font-weight: 700;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--cyan-soft);
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.days { z-index: 0; }
+.day {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,247,255,0.05) 12%, rgba(124,247,255,0.05) 88%, transparent);
+  transform: translateY(-50%);
+}
+.day.week { background: linear-gradient(90deg, transparent, rgba(124,247,255,0.12) 10%, rgba(124,247,255,0.12) 90%, transparent); }
+.day.month-edge {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(124,247,255,0.28) 8%, rgba(124,247,255,0.28) 92%, transparent);
+}
+
+.now {
+  height: 2px; top: auto; bottom: auto;
+  background: var(--cyan);
+  box-shadow: 0 0 18px rgba(124,247,255,0.7);
+  transform: translateY(-50%);
+  z-index: 6;
+}
+.now .lab {
+  position: absolute; right: 10px; top: -16px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.rails {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  z-index: 1;
+}
+.rail {
+  position: relative;
+  height: 100%;
+}
+.rail::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--tone) 20%, transparent),
+    color-mix(in srgb, var(--tone) 85%, transparent) 12%,
+    color-mix(in srgb, var(--tone) 80%, transparent) 88%,
+    transparent);
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--tone) 45%, transparent),
+    0 0 32px color-mix(in srgb, var(--tone) 16%, transparent);
+}
+
+.dust { z-index: 2; }
+.grain {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(231,231,242,0.55);
+  box-shadow: 0 0 8px rgba(124,247,255,0.25);
+  transform: translate(-50%, -50%);
+}
+
+.specks {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  pointer-events: none;
+  z-index: 5;
+}
+.colspecks { position: relative; pointer-events: none; }
+.speck {
+  position: absolute;
+  left: 50%;
+  appearance: none; -webkit-appearance: none;
+  border: 0; padding: 0; margin: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--tone);
+  width: 5px; height: 5px; opacity: 0.7;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--tone) 50%, transparent);
+  pointer-events: auto;
+  cursor: pointer;
+  font-size: 0;
+}
+.node {
+  position: absolute;
+  left: 50%;
+  width: 12px; height: 12px;
+  z-index: 6;
+  pointer-events: auto;
+  text-decoration: none;
+  color: inherit;
+  transform: translate(-50%, -50%);
+}
+.node .stem {
+  position: absolute;
+  left: 50%; top: 12px;
+  width: 1px; height: 12px;
+  background: color-mix(in srgb, var(--tone) 55%, transparent);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.node.flip .stem { top: auto; bottom: 12px; }
+.node .dot {
+  display: block;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--tone) 22%, transparent),
+    0 0 16px color-mix(in srgb, var(--tone) 70%, transparent);
+}
+.node .card {
+  position: absolute;
+  left: 50%; top: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: max-content;
+  max-width: calc(100vw / 4 - 1.2rem);
+  padding: 5px 8px 6px;
+  border-radius: 8px;
+  background: rgba(8,8,16,0.82);
+  border: 1px solid color-mix(in srgb, var(--tone) 32%, transparent);
+  backdrop-filter: blur(8px);
+  text-align: center;
+}
+.node.flip .card { top: auto; bottom: 24px; }
+.node .date {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  color: var(--tone); font-variant-numeric: tabular-nums;
+}
+.node .branch {
+  font-family: var(--mono); font-size: 9px; line-height: 1.25;
+  color: var(--ink-strong);
+  white-space: nowrap;
+}
+.node:hover .dot, .node:focus-visible .dot { transform: scale(1.18); }
+.node:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 8px; }
+
+.readout {
+  min-height: 1.3em;
+  margin: 0;
+  padding: 4px 12px 8px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+  color: var(--cyan-soft);
+  grid-column: 1 / 6;
+  grid-row: 2;
+}
+.note {
+  margin: 8px 18px 8px;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-faint); letter-spacing: 0.04em;
+}
+.mantra {
+  margin: 8px 0 0; text-align: center;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 640px) {
+  :root { --gutter: 2.6rem; }
+  .colhead .word { font-size: clamp(13px, 4.2vw, 18px); }
+  .colhead .meta { display: none; }
+  .node .card { padding: 4px 5px 5px; max-width: 22vw; }
+  .node .branch { font-size: 7px; }
+  .band .lab { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none; filter: none; }
+  .node .dot, .speck, .grain, .now, .rail::after { box-shadow: none; }
+}
 </style>
 </head>
 <body>
-<main class="doc" style="box-sizing:border-box; max-width:46rem; margin:0 auto; padding:64px clamp(24px,5vw,56px) 96px; color:#e7e7f2; font-family:'Outfit',system-ui,sans-serif; font-weight:300; font-size:17px; line-height:1.72;">
-  <table class="doc-frame" role="presentation" style="width:100%; border-collapse:collapse;">
-    <thead><tr><td class="hdr-space" style="display:none; padding:0;"></td></tr></thead>
-    <tbody><tr><td style="padding:0;">
+<div class="page">
+  <div class="mast">
+    <span>⬡</span>
+    <a href="pages/instruments.html">Zychs</a>
+    <span class="sep">/</span>
+    <span style="color:#7b7b92;">public door</span>
+    <span class="sep">/</span>
+    <a href="pages/instruments.html">instruments</a>
+    <a class="resume-door" href="pages/resume.html">résumé</a>
+  </div>
 
-      <!-- Masthead -->
-      <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(124,247,255,0.85);">
-        <span style="font-size:14px;">⬡</span>
-        <span>Sesefus</span>
-        <span style="color:#3a3a4d;">/</span>
-        <span style="color:#7b7b92;">Prologue</span>
-      </div>
+  <div class="head">
+    <h1>Four domains</h1>
+    <p class="standfirst">Portrait time. Each node carries a date and a branch slug. Dust is still unnamed pushes.</p>
+    <div class="stats" aria-label="counts">
+      <div><div class="n" id="stat-domains">4</div><div class="l">domains</div></div>
+      <div><div class="n" id="stat-marks">10</div><div class="l">public doors</div></div>
+      <div><div class="n" id="stat-dust">41</div><div class="l">pushes as dust</div></div>
+    </div>
+    <a class="profile-door" href="pages/resume.html">
+      <span><strong>J.D. Bardwell</strong><span>UX design · QA &amp; evaluation · accessibility</span></span>
+      <b>View résumé →</b>
+    </a>
+  </div>
 
-      <h1 style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(34px,6vw,52px); line-height:1.02; letter-spacing:0.01em; text-transform:uppercase; margin:22px 0 0; color:#f4f4fb;">Sisyphus,<br>Flipped</h1>
+  <div class="chart" id="chart">
+    <div class="heads" id="heads">
+      <div class="spine">time ↓</div>
+      <div class="readout" id="tip">node · date · branch</div>
+    </div>
+    <div class="field" id="field">
+      <div class="bands" id="bands"></div>
+      <div class="days" id="days" aria-hidden="true"></div>
+      <div class="month-spine" id="spine" aria-hidden="true"></div>
+      <div class="rails" id="rails" aria-hidden="true"></div>
+      <div class="dust" id="dust" aria-hidden="true"></div>
+      <div class="now" id="now"><span class="lab">now</span></div>
+      <div class="specks" id="specks"></div>
+    </div>
+  </div>
 
-      <p style="margin:18px 0 0; font-family:'Outfit',sans-serif; font-weight:300; font-size:clamp(17px,2.4vw,21px); line-height:1.45; color:#a7a7bd; max-width:34rem;">Circadian entrainment, audio journaling, and AI as a cognitive prosthetic.</p>
+  <p class="note">Each named node is a public door: date + branch slug. Dust is grain/push with a day count. No sha. Circadia is not done.</p>
+  <div class="mantra">For Everyone · Voice-First · Unhurried · Negentropic</div>
+</div>
 
-      <!-- Meta row -->
-      <div class="keep" style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:26px 0 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">
-        <span style="color:#6c6c83;">2026 · 06 · 14</span>
-        <span style="color:#2e2e3e;">|</span>
-        <span style="padding:4px 11px; border-radius:999px; border:1px solid rgba(124,247,255,0.22); background:rgba(124,247,255,0.06); color:#9fe9f1; text-transform:lowercase; letter-spacing:0.02em;">recovery</span>
-        <span style="padding:4px 11px; border-radius:999px; border:1px solid rgba(124,247,255,0.22); background:rgba(124,247,255,0.06); color:#9fe9f1; text-transform:lowercase; letter-spacing:0.02em;">circadian</span>
-        <span style="padding:4px 11px; border-radius:999px; border:1px solid rgba(124,247,255,0.22); background:rgba(124,247,255,0.06); color:#9fe9f1; text-transform:lowercase; letter-spacing:0.02em;">audio-journaling</span>
-        <span style="padding:4px 11px; border-radius:999px; border:1px solid rgba(124,247,255,0.22); background:rgba(124,247,255,0.06); color:#9fe9f1; text-transform:lowercase; letter-spacing:0.02em;">cognitive-prosthetic</span>
-      </div>
+<script>
+(function () {
+  var baked = {"grain":"public_doors_plus_anonymized_pushes","span":["2026-06-01","2026-08-22"],"domains":[{"id":"circadia","name":"Circadia","role":"keeps time","status":"not done","href":"pages/circadia.html","tone":"teal","marks":[{"d":"2026-08-12","k":"public door","branch":"circadia/public-door","l":"scheduler wired · product is not","href":"pages/circadia.html"}]},{"id":"scanner","name":"Scanner","role":"finds the work","status":"nearly done","href":"pages/artifact-scanner.html","tone":"amber","marks":[{"d":"2026-08-12","k":"public door","branch":"scanner/public-door","l":"maps sessions · does not dump chats","href":"pages/artifact-scanner.html"}]},{"id":"sesefus","name":"Sesefus","role":"journals","status":"first public excerpt","href":"pages/prologue.html","tone":"cyan","marks":[{"d":"2026-06-14","k":"origin","branch":"sesefus/prologue","l":"Sisyphus, Flipped","href":"pages/prologue.html"},{"d":"2026-06-24","k":"excerpts site","branch":"sesefus/excerpts-site","l":"public pages stand up","href":"pages/prologue.html"},{"d":"2026-07-04","k":"ledger","branch":"sesefus/ledger-07-04","l":"session ledger 07·04","href":"pages/ledger-2026-07-04.html"},{"d":"2026-07-05","k":"cheatsheet","branch":"sesefus/cheatsheet","l":"CLI surface snapshot","href":"pages/cheatsheet.html"},{"d":"2026-07-11","k":"machine","branch":"sesefus/machine","l":"state of the machine","href":"pages/machine.html"},{"d":"2026-07-11","k":"drift","branch":"sesefus/drift","l":"drift architecture","href":"pages/drift.html"},{"d":"2026-08-12","k":"peer stance","branch":"sesefus/peer-stance","l":"sibling, not the parent","href":"pages/instruments.html"}]},{"id":"naissance","name":"n-ai-ssance","role":"skill trail","status":"public · MIT","href":"pages/n-ai-ssance.html","tone":"rose","marks":[{"d":"2026-08-12","k":"v1.0.0","branch":"n-ai-ssance/v1.0.0","l":"five Grok skills · MIT","href":"pages/n-ai-ssance.html"}]}],"dust":[{"d":"2026-08-03","n":1},{"d":"2026-08-04","n":1},{"d":"2026-08-10","n":4},{"d":"2026-08-11","n":1},{"d":"2026-08-13","n":4},{"d":"2026-08-15","n":1},{"d":"2026-08-17","n":24},{"d":"2026-08-18","n":5}]};
 
-      <!-- Excerpt / standfirst -->
-      <p class="keep" style="margin:30px 0 0; padding:20px 24px; border-left:2px solid rgba(124,247,255,0.5); background:rgba(124,247,255,0.04); border-radius:0 12px 12px 0; font-size:17px; line-height:1.62; color:#c7c7da; font-style:italic;">I left my first rehab two weeks early. The official excuse was a bad roommate situation. The real reason was $8,000 for egregiously suboptimal therapeutic care. In places that confiscate your phone, the least they can do is give you a real replacement — not for scrolling, but for remembering what time actually feels like.</p>
+  function parseDay(d) { return Date.parse(d + "T12:00:00Z"); }
+  function hash(s) {
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return (h >>> 0) / 4294967296;
+  }
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  function iso(dt) {
+    return dt.getUTCFullYear() + "-" + pad2(dt.getUTCMonth() + 1) + "-" + pad2(dt.getUTCDate());
+  }
 
-      <hr style="border:none; border-top:1px solid #1f1f2c; margin:40px 0 36px;">
+  function draw(data) {
+    var span = data.span || ["2026-06-01", "2026-08-22"];
+    var t0 = Date.parse(span[0] + "T00:00:00Z");
+    var t1 = Date.parse(span[1] + "T00:00:00Z");
+    var range = Math.max(t1 - t0, 1);
+    var dayCount = Math.round(range / 86400000);
+    var dayPx = window.innerWidth < 640 ? 20 : 28;
+    var fieldH = Math.max(1600, dayCount * dayPx);
+    var field = document.getElementById("field");
+    field.style.height = fieldH + "px";
 
-      <!-- Body: opening with drop cap -->
-      <p style="margin:0; text-wrap:pretty;"><span style="float:left; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:62px; line-height:0.82; padding:6px 14px 0 0; color:#7cf7ff; text-shadow:0 0 22px rgba(124,247,255,0.35);">T</span>he second time I pulled up to the first rehab I went to, I left two weeks early.</p>
+    function pct(day) {
+      var t = parseDay(day);
+      return 1.4 + ((t - t0) / range) * 96.2;
+    }
 
-      <p style="margin:20px 0 0; text-wrap:pretty;">I gave them a <span style="color:#6c6c83; letter-spacing:0.1em;">▮▮▮▮</span> excuse. The real reason was that I was paying $8,000 for suboptimal — <em style="color:#d6d6e6;">egregiously</em> suboptimal — therapeutic services, and I didn't know how to tell them that without getting into a whole ego debate with the facility. So I said the roommate and I had deep history and beef, and I wasn't sure he wasn't going to go postal. That part wasn't entirely a lie. I was genuinely uncertain.</p>
+    var domains = data.domains || [];
+    var dust = data.dust || [];
+    var markN = 0;
+    domains.forEach(function (d) { markN += (d.marks || []).length; });
+    var dustN = dust.reduce(function (a, x) { return a + x.n; }, 0);
+    document.getElementById("stat-domains").textContent = domains.length;
+    document.getElementById("stat-marks").textContent = markN;
+    document.getElementById("stat-dust").textContent = dustN;
 
-      <p style="margin:20px 0 0; text-wrap:pretty;">But if the facility had at least provided <em style="color:#d6d6e6;">supplementative</em> therapeutic care, I think I would have stayed the whole way through.</p>
+    var heads = document.getElementById("heads");
+    var tipEl = document.getElementById("tip");
+    heads.querySelectorAll(".colhead").forEach(function (n) { n.remove(); });
+    domains.forEach(function (dom) {
+      var a = document.createElement("a");
+      a.className = "colhead";
+      a.href = dom.href;
+      a.style.setProperty("--tone", "var(--tone-" + dom.tone + ")");
+      var word = document.createElement("div");
+      word.className = "word";
+      if (dom.id === "naissance") word.innerHTML = "n-ai-<br>ssance";
+      else word.textContent = dom.name;
+      var meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = dom.role + " · " + dom.status;
+      a.appendChild(word);
+      a.appendChild(meta);
+      heads.insertBefore(a, tipEl);
+    });
 
-      <p style="margin:20px 0 0; text-wrap:pretty;">I don't think even that would have magically fixed my specific case. What I <em style="color:#d6d6e6;">do</em> think is that in rehabs where they typically take your phone, it is most necessary to provide a replacement. And that replacement is <strong style="font-weight:600; color:#f4f4fb;">not</strong> for texting other people. It's not for entertainment.</p>
+    var months = [
+      { d: "2026-06-01", end: "2026-07-01", k: "Jun", s: "origin", cls: "jun" },
+      { d: "2026-07-01", end: "2026-08-01", k: "Jul", s: "machine · ledger", cls: "jul" },
+      { d: "2026-08-01", end: span[1], k: "Aug", s: "peer doors", cls: "aug" }
+    ];
+    var bands = document.getElementById("bands");
+    bands.replaceChildren();
+    var spine = document.getElementById("spine");
+    spine.replaceChildren();
+    months.forEach(function (m) {
+      var top = pct(m.d);
+      var bot = pct(m.end);
+      var b = document.createElement("div");
+      b.className = "band " + m.cls;
+      b.style.top = top + "%";
+      b.style.height = Math.max(bot - top, 4) + "%";
+      b.innerHTML = "<span class=\"lab\">" + m.k + "<span class=\"sub\">" + m.s + "</span></span>";
+      bands.appendChild(b);
+      var sl = document.createElement("div");
+      sl.className = "spine-lab";
+      sl.style.top = top + "%";
+      sl.textContent = m.k;
+      spine.appendChild(sl);
+    });
 
-      <!-- Pull quote -->
-      <p class="keep" style="margin:38px 0; text-align:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(22px,4vw,30px); letter-spacing:0.03em; text-transform:uppercase; color:#7cf7ff; text-shadow:0 0 28px rgba(124,247,255,0.3); line-height:1.2;">It's for circadian<br>entrainment.</p>
+    var days = document.getElementById("days");
+    days.replaceChildren();
+    var cur = new Date(t0);
+    var end = new Date(t1);
+    while (cur <= end) {
+      var d = iso(cur);
+      var el = document.createElement("div");
+      el.className = "day";
+      if (cur.getUTCDate() === 1) el.className += " month-edge";
+      else if (cur.getUTCDay() === 1) el.className += " week";
+      el.style.top = pct(d) + "%";
+      days.appendChild(el);
+      cur.setUTCDate(cur.getUTCDate() + 1);
+    }
 
-      <!-- Section -->
-      <h2 style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin:44px 0 4px;">What Circadian Entrainment Actually Means Here</h2>
-      <div style="height:2px; width:48px; background:rgba(124,247,255,0.5); margin:0 0 18px;"></div>
+    document.getElementById("now").style.top = pct(span[1]) + "%";
 
-      <p style="margin:0; text-wrap:pretty;">Circadian entrainment is the process of reminding the brain how long time actually occurs within — how fast time moves, what a real hour feels like when you're cut off from normal cues.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">When your phone is taken, you lose one of the most powerful external clocks most people have. Without it, days blur. Therapy that is already suboptimal becomes even less effective because the basic rhythm of the day is broken.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">A shallow fix would be a basic alarm engine. We can do much better.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">With user permission, through a defined microphone source, the system can capture audio clips in three varying sizes — structured, intentional audio journal entries. Not voice memos for later entertainment: short enough to be sustainable, long enough to capture real reflection.</p>
+    var rails = document.getElementById("rails");
+    rails.replaceChildren();
+    domains.forEach(function (dom) {
+      var r = document.createElement("div");
+      r.className = "rail";
+      r.style.setProperty("--tone", "var(--tone-" + dom.tone + ")");
+      rails.appendChild(r);
+    });
 
-      <!-- Clip lengths -->
-      <div class="keep" style="display:flex; gap:12px; margin:24px 0 0; flex-wrap:wrap;">
-        <div style="flex:1 1 120px; min-width:110px; padding:18px 16px; border:1px solid #272739; border-radius:14px; background:rgba(16,16,24,0.7); text-align:center;">
-          <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; color:#7cf7ff;">30<span style="font-size:14px; color:#6c6c83;">s</span></div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#6c6c83; margin-top:6px;">a check-in</div>
-        </div>
-        <div style="flex:1 1 120px; min-width:110px; padding:18px 16px; border:1px solid #272739; border-radius:14px; background:rgba(16,16,24,0.7); text-align:center;">
-          <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; color:#7cf7ff;">60<span style="font-size:14px; color:#6c6c83;">s</span></div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#6c6c83; margin-top:6px;">a thought</div>
-        </div>
-        <div style="flex:1 1 120px; min-width:110px; padding:18px 16px; border:1px solid #272739; border-radius:14px; background:rgba(16,16,24,0.7); text-align:center;">
-          <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; color:#7cf7ff;">90<span style="font-size:14px; color:#6c6c83;">s</span></div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#6c6c83; margin-top:6px;">a reflection</div>
-        </div>
-      </div>
+    var dustHost = document.getElementById("dust");
+    dustHost.replaceChildren();
+    dust.forEach(function (x) {
+      var i;
+      for (i = 0; i < x.n; i++) {
+        var g = document.createElement("span");
+        g.className = "grain";
+        var size = 2.4 + hash(x.d + ":s:" + i) * 3.4;
+        g.style.width = size + "px";
+        g.style.height = size + "px";
+        g.style.left = (6 + hash(x.d + ":x:" + i) * 88) + "%";
+        g.style.top = (pct(x.d) + (hash(x.d + ":y:" + i) - 0.5) * 1.1) + "%";
+        g.style.opacity = String(0.22 + hash(x.d + ":o:" + i) * 0.5);
+        dustHost.appendChild(g);
+      }
+    });
 
-      <!-- Section -->
-      <h2 style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin:44px 0 4px;">The Hardware Trap (And How to Avoid It)</h2>
-      <div style="height:2px; width:48px; background:rgba(124,247,255,0.5); margin:0 0 18px;"></div>
+    var specks = document.getElementById("specks");
+    specks.replaceChildren();
+    var tip = document.getElementById("tip");
+    var idle = "node · date · branch";
 
-      <p style="margin:0; text-wrap:pretty;">The tricky part is bypassing the need for a custom manufactured device. Most "solutions" don't account for the fact that the human body moves. You're going to be far from the microphone at some point. I contemplated a necklace, a wristband, or some little companion device that pairs with the phone so you could raise it to your face and speak into it.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">But that would make the entire problem space ten times harder. Now you have to design PCBs, understand manufacturing tolerances, deal with ordering runs, and pray you didn't get anything a hair wrong on the first revision. That path turns a simple app into a hardware company.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">The beauty of circadian entrainment is that you don't need the necklace. You can use the phone you already have — or the replacement device the facility provides — and build the entire interface in software.</p>
+    domains.forEach(function (dom, di) {
+      var col = document.createElement("div");
+      col.className = "colspecks";
+      col.style.setProperty("--tone", "var(--tone-" + dom.tone + ")");
 
-      <!-- Section -->
-      <h2 style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin:44px 0 4px;">Sesefus — Sisyphus, Spelt Differently</h2>
-      <div style="height:2px; width:48px; background:rgba(124,247,255,0.5); margin:0 0 18px;"></div>
+      (dom.marks || []).forEach(function (m, idx) {
+        var branch = m.branch || (dom.id + "/" + m.k.replace(/\s+/g, "-"));
+        var b = document.createElement("a");
+        b.className = "node" + ((di + idx) % 2 ? " flip" : "");
+        b.href = m.href || dom.href;
+        b.style.top = (pct(m.d) + (hash(dom.id + m.k + "y") - 0.5) * 0.28) + "%";
+        b.dataset.d = m.d;
+        b.dataset.branch = branch;
+        b.setAttribute("aria-label", m.d + " · " + branch + " — " + m.l);
+        b.innerHTML = "<span class=\"dot\"></span><span class=\"stem\"></span>";
+        var card = document.createElement("span");
+        card.className = "card";
+        var dateEl = document.createElement("span");
+        dateEl.className = "date";
+        dateEl.textContent = m.d;
+        var brEl = document.createElement("span");
+        brEl.className = "branch";
+        brEl.textContent = branch;
+        card.appendChild(dateEl);
+        card.appendChild(brEl);
+        b.appendChild(card);
+        function say() {
+          tip.textContent = m.d + "  ·  " + branch + "  —  " + m.l;
+        }
+        b.addEventListener("mouseenter", say);
+        b.addEventListener("focus", say);
+        b.addEventListener("mouseleave", function () { tip.textContent = idle; });
+        b.addEventListener("blur", function () { tip.textContent = idle; });
+        col.appendChild(b);
+      });
 
-      <p style="margin:0; text-wrap:pretty;">This is the core idea behind <strong style="font-weight:600; color:#f4f4fb;">Sesefus</strong> — the CLI command is <code style="font-family:'JetBrains Mono',monospace; font-size:0.85em; padding:2px 7px; border-radius:6px; background:rgba(124,247,255,0.1); border:1px solid rgba(124,247,255,0.2); color:#9fe9f1;">ssfs</code>.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">Sisyphus is about flipping the folk tale on its head. Instead of being punished by endlessly pushing a boulder up a hill — or, in the modern version, burning out from your own intellect — you utilize AI as a <strong style="font-weight:600; color:#f4f4fb;">cognitive prosthetic</strong>. The goal is to better your own mind in a way that doesn't require money, healthcare insurance, or a professional — though it would benefit greatly from a professional's <em style="color:#d6d6e6;">assistant</em>. Because of the irony, we spell it differently: <strong style="font-weight:600; color:#7cf7ff;">Sesefus</strong>.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">The backbone is the command-line interface. All actions the app can take for the user are referenced by the brief <code style="font-family:'JetBrains Mono',monospace; font-size:0.85em; padding:2px 7px; border-radius:6px; background:rgba(124,247,255,0.1); border:1px solid rgba(124,247,255,0.2); color:#9fe9f1;">ssfs</code> prefix, followed by category, command, variable flags, and other variables.</p>
+      dust.forEach(function (x) {
+        var j;
+        var take = Math.max(1, Math.round(x.n / domains.length));
+        for (j = 0; j < take; j++) {
+          var s = document.createElement("button");
+          s.type = "button";
+          s.className = "speck";
+          var sz = 3 + hash(dom.id + x.d + j) * 5;
+          s.style.width = sz + "px";
+          s.style.height = sz + "px";
+          s.style.top = (pct(x.d) + (hash(dom.id + x.d + "y" + j) - 0.5) * 1.4) + "%";
+          s.style.left = (50 + (hash(dom.id + x.d + "x" + j) - 0.5) * 54) + "%";
+          s.style.opacity = String(0.35 + hash(dom.id + x.d + "o" + j) * 0.4);
+          s.dataset.d = x.d;
+          s.dataset.branch = "grain/push";
+          s.setAttribute("aria-label", x.d + " · grain/push · " + x.n);
+          function sayDust() {
+            tip.textContent = x.d + "  ·  grain/push  ·  " + x.n;
+          }
+          s.addEventListener("mouseenter", sayDust);
+          s.addEventListener("focus", sayDust);
+          s.addEventListener("mouseleave", function () { tip.textContent = idle; });
+          s.addEventListener("blur", function () { tip.textContent = idle; });
+          col.appendChild(s);
+        }
+      });
 
-      <!-- Section -->
-      <h2 style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin:44px 0 4px;">Rich Alarm Interface on a Shared Architecture</h2>
-      <div style="height:2px; width:48px; background:rgba(124,247,255,0.5); margin:0 0 18px;"></div>
+      specks.appendChild(col);
+    });
+  }
 
-      <p style="margin:0; text-wrap:pretty;">The alarm system is not just "set a reminder." You'd be able to:</p>
-      <ul style="list-style:none; margin:16px 0 0; padding:0;">
-        <li class="keep" style="position:relative; padding:0 0 0 26px; margin:0 0 12px;"><span style="position:absolute; left:0; color:#7cf7ff;">▸</span>Group alarms by day.</li>
-        <li class="keep" style="position:relative; padding:0 0 0 26px; margin:0 0 12px;"><span style="position:absolute; left:0; color:#7cf7ff;">▸</span>Further group them by category of intent.</li>
-        <li class="keep" style="position:relative; padding:0 0 0 26px; margin:0;"><span style="position:absolute; left:0; color:#7cf7ff;">▸</span>Save and swap entire <strong style="font-weight:600; color:#f4f4fb;">profiles for the week</strong>.</li>
-      </ul>
-      <p style="margin:18px 0 0; text-wrap:pretty;">Example: you want all your Mondays at 9am to trigger a particular thing. Save that configuration as a profile. Later you can swap the entire 9am slot between different profiles without editing one by one by one.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">Future machine-learning features include using embedding spaces to match verses of religious texts to times of the day, localized to specific journal prompts. If a prompt scores highly against a verse from the Bible — or the Quran, or whichever text you affiliate with — the system can surface a curated notion at the next alarm that resonates strongly with what you're working on.</p>
+  function setScroll() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var t = max > 0 ? window.scrollY / max : 0;
+    document.documentElement.style.setProperty("--scroll", t.toFixed(4));
+  }
+  window.addEventListener("scroll", setScroll, { passive: true });
+  setScroll();
 
-      <!-- Section -->
-      <h2 style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin:44px 0 4px;">Audio as First-Class Data</h2>
-      <div style="height:2px; width:48px; background:rgba(124,247,255,0.5); margin:0 0 18px;"></div>
-
-      <p style="margin:0; text-wrap:pretty;">The three clip lengths feed into an audio database. From each entry, a 1-to-1 <strong style="font-weight:600; color:#f4f4fb;">artifact database</strong> is derived — transcriptions, embeddings, metadata. This processing happens offline on the host, not in real time.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">The architecture is deliberately a host + embedded client model. Run the full host+client bundle on one machine, or copy the client executable across devices on your local network for a heterogeneous compute stack. The client handles local audio capture (Win32 waveIn or equivalent); the host manages schedules, vault storage, and coordination.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">This is already partially implemented in Zig as the Circadia / Sesephus alarm engine — host daemon plus edge clients communicating over length-prefixed TCP frames, with an HTTP control surface and audio journaling paths.</p>
-
-      <!-- Section -->
-      <h2 style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin:44px 0 4px;">Local AI, Not Cloud Dependency</h2>
-      <div style="height:2px; width:48px; background:rgba(124,247,255,0.5); margin:0 0 18px;"></div>
-
-      <p style="margin:0; text-wrap:pretty;">Sesefus is designed to scale to localized, hardware-accelerated machine-learning inference on the audio and artifact databases.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">The vLLM porting work happening in parallel (Crow-9B-HERETIC via a local OpenAI-compatible endpoint) is part of the same prosthetic layer — bringing high-quality language-model assistance for prompt matching and reflection suggestions without sending your private reflections anywhere.</p>
-
-      <!-- Section -->
-      <h2 style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin:44px 0 4px;">Why This Matters</h2>
-      <div style="height:2px; width:48px; background:rgba(124,247,255,0.5); margin:0 0 18px;"></div>
-
-      <p style="margin:0; text-wrap:pretty;">In recovery environments — and honestly, in ordinary life under stress — the difference between "I have a phone taken away" and "I have a structured, private, time-aware prosthetic that helps me remember what a day actually is" is enormous. It turns the confiscated phone from a punishment into an opportunity for a better-designed replacement.</p>
-      <p style="margin:18px 0 0; text-wrap:pretty;">No custom hardware. No $8,000 for half-baked therapy. Just reliable software, audio that respects the user's real state, rich scheduling that actually matches how humans live their weeks, and local AI that acts as an assistant rather than a replacement for a real person.</p>
-
-      <p class="keep" style="margin:34px 0 0; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(18px,3vw,24px); letter-spacing:0.02em; color:#f4f4fb; line-height:1.3;">Sisyphus doesn't have to push<br>the boulder alone anymore.</p>
-
-      <!-- Related artifacts panel -->
-      <div class="keep" style="margin:46px 0 0; padding:26px 28px; border:1px solid #272739; border-radius:16px; background:linear-gradient(180deg, rgba(16,16,24,0.85), rgba(10,10,16,0.85)); box-shadow:0 26px 50px rgba(0,0,0,0.55);">
-        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#9fe9f1; margin-bottom:16px;">Related artifacts in the repo</div>
-        <div style="display:flex; flex-direction:column; gap:14px; font-size:15px; line-height:1.5;">
-          <div style="display:flex; gap:12px;"><code style="flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:12px; color:#9fe9f1;">core/sesephus/</code><span style="color:#9a9ab0;">Current Zig host/client Circadia alarm engine — audio capture, subgroups, rhythm scheduling, journal commands.</span></div>
-          <div style="display:flex; gap:12px;"><code style="flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:12px; color:#9fe9f1;">ssfs.bat</code><span style="color:#9a9ab0;">Launcher.</span></div>
-          <div style="display:flex; gap:12px;"><code style="flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:12px; color:#9fe9f1;">LeadLogic-Engine</code><span style="color:#9a9ab0;">vLLM work (Crow-9B local inference) for the embedding + reflection layer.</span></div>
-        </div>
-      </div>
-
-      <!-- Marginalia / raw fragment -->
-      <div class="keep" style="margin:40px 0 0; padding-top:24px; border-top:1px dashed #2a2a3a;">
-        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#5a5a70; margin-bottom:12px;">Marginalia · raw, unedited</div>
-        <p style="margin:0; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; color:#7b7b92; font-style:normal;">Sissyphus, in Renaissance or REnisioure le sesefu, the ancient folk lore, the pervasion notion of a conceptual nacho or what quin and i like to say when 'your reheating someones nachos', which is arriving at the same conclusion as acedmeic rigor and basically on raw talent, and sheeer odds alone. No, its just whe nyou are doing something someone seens someone else do, and they wanna talk about it and other things... may lord have mercy on that soul..</p>
-      </div>
-
-      <!-- Footer mantra -->
-      <div style="margin:44px 0 0; text-align:center; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#5a5a70;">For Everyone · Voice-First · Unhurried · Negentropic</div>
-
-    </td></tr></tbody>
-    <tfoot><tr><td class="ftr-space" style="display:none; padding:0;"></td></tr></tfoot>
-  </table>
-</main>
+  fetch("data/timeline.json", { cache: "no-store" }).then(function (r) {
+    if (!r.ok) throw new Error("no json");
+    return r.json();
+  }).then(draw).catch(function () { draw(baked); });
+})();
+</script>
 </body>
 </html>

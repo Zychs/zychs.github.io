@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesefus — Session Ledger 07·04</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap">
+<style>
+/* Neurialab v3.5.4 site chrome (constrained) */
+:root {
+  --bg:#060608; --surface:#101018; --border:#272739; --accent:#7cf7ff;
+  --text-main:#f5f5ff; --text-muted:#8e8eaa; --mono:"JetBrains Mono",monospace;
+}
+body { margin:0; background: radial-gradient(circle at top, #17172a 0%, #050509 55%, #000 100%); color:#e7e7f2; font-family:'Outfit',system-ui,sans-serif; }
+.site-header { position:sticky; top:0; z-index:50; background:rgba(6,6,12,0.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
+.site-header .wrap { max-width:1120px; margin:0 auto; padding:0 1.25rem; display:flex; align-items:center; justify-content:space-between; height:52px; font-family:var(--mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.16em; }
+.brand { color:var(--accent); font-weight:700; }
+.nav a { color:#8e8eaa; margin-left:1.1rem; text-decoration:none; }
+.nav a:hover { color:#7cf7ff; }
+.note { font-size:0.68rem; color:#6c6c83; margin-left:1rem; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div><span class="brand">⬡ Sesefus</span> <span style="color:#5a5a70">/ curated public</span></div>
+    <nav class="nav">
+      <a href="../index.html">Home</a>
+      <a href="prologue.html">Prologue</a>
+      <a href="machine.html">Machine</a>
+      <a href="drift.html">Drift</a>
+      <a href="cheatsheet.html">Cheatsheet</a>
+      <a href="ledger-2026-07-04.html">Ledger</a>
+    </nav>
+  </div>
+</header>
+<style>
+  :root {
+    --ink:#e7e7f2; --ink-strong:#f4f4fb; --ink-soft:#a7a7bd; --ink-mute:#6c6c83; --ink-faint:#5a5a70;
+    --cyan:#7cf7ff; --cyan-soft:#9fe9f1; --ember:#f0937c;
+    --line:#272739; --line-soft:#1f1f2c; --panel:rgba(16,16,24,0.7); --panel-deep:rgba(10,10,16,0.85);
+    --pill-border:rgba(124,247,255,0.22); --pill-bg:rgba(124,247,255,0.06);
+    --mono:'JetBrains Mono',ui-monospace,'Cascadia Code',Consolas,monospace;
+    --body:'Outfit','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  html { background:#000; }
+  body {
+    margin:0; color:var(--ink); font-family:var(--body); font-weight:300; font-size:17px; line-height:1.65;
+    background:
+      radial-gradient(120% 80% at 18% -10%, rgba(124,247,255,0.07), transparent 60%),
+      radial-gradient(140% 90% at 100% 8%, rgba(124,247,255,0.05), transparent 55%),
+      linear-gradient(180deg,#17172a 0%,#050509 55%,#000 100%);
+    background-attachment:fixed; min-height:100vh;
+  }
+  .doc { box-sizing:border-box; max-width:44rem; margin:0 auto; padding:56px clamp(20px,5vw,52px) 96px; }
+  .masthead { display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(124,247,255,0.85); }
+  .sep { color:#2e2e3e; }
+  h1 { font-family:var(--mono); font-weight:700; font-size:clamp(30px,6vw,44px); line-height:1.05; text-transform:uppercase; margin:20px 0 0; color:var(--ink-strong); }
+  .standfirst { margin:14px 0 0; font-size:clamp(16px,2.2vw,19px); color:var(--ink-soft); max-width:34rem; line-height:1.5; }
+  .note { margin:22px 0 0; padding:14px 18px; border-left:2px solid rgba(124,247,255,0.5); background:rgba(124,247,255,0.04); border-radius:0 12px 12px 0; font-size:14.5px; color:#c7c7da; }
+
+  details { margin:14px 0 0; border:1px solid var(--line); border-radius:14px; background:var(--panel); overflow:hidden; }
+  summary {
+    list-style:none; cursor:pointer; padding:16px 18px; display:flex; align-items:center; gap:12px;
+    font-family:var(--mono); font-weight:600; font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:var(--cyan-soft);
+    -webkit-tap-highlight-color:transparent;
+  }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--cyan); transition:transform .15s; flex:0 0 auto; }
+  details[open] summary::before { transform:rotate(90deg); }
+  summary:focus-visible { outline:2px solid var(--cyan); outline-offset:-2px; }
+  summary .hint { margin-left:auto; font-weight:400; font-size:10px; letter-spacing:0.08em; color:var(--ink-faint); text-transform:none; }
+  .d-body { padding:2px 20px 20px; border-top:1px solid var(--line-soft); font-size:15px; color:var(--ink-soft); }
+  .d-body p { margin:14px 0 0; }
+  .d-body strong { color:var(--ink-strong); font-weight:600; }
+  .d-body code { font-family:var(--mono); font-size:0.85em; padding:1px 6px; border-radius:6px; background:rgba(124,247,255,0.1); border:1px solid rgba(124,247,255,0.2); color:var(--cyan-soft); }
+
+  .score { display:inline-block; min-width:44px; text-align:center; font-family:var(--mono); font-weight:700; font-size:12px; padding:3px 8px; border-radius:8px; border:1px solid var(--pill-border); background:var(--pill-bg); color:var(--cyan); }
+  .score.hot { border-color:rgba(224,102,74,0.5); background:rgba(224,102,74,0.1); color:var(--ember); }
+
+  ul.tight { margin:12px 0 0; padding-left:20px; }
+  ul.tight li { margin:8px 0 0; }
+  ul.checks { margin:12px 0 0; padding:0; list-style:none; }
+  ul.checks li { margin:9px 0 0; padding-left:26px; position:relative; }
+  ul.checks li::before { content:"✓"; position:absolute; left:0; color:var(--cyan); font-family:var(--mono); font-weight:700; }
+
+  .tblwrap { overflow-x:auto; margin:14px 0 0; border:1px solid var(--line-soft); border-radius:10px; }
+  table { border-collapse:collapse; width:100%; min-width:430px; font-size:13.5px; }
+  th { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-mute); text-align:left; padding:10px 12px 7px; border-bottom:1px solid var(--line); }
+  td { padding:8px 12px; border-bottom:1px solid var(--line-soft); color:var(--ink-soft); vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+
+  .copyblock { position:relative; margin:14px 0 0; padding:16px 18px; border-radius:12px; background:rgba(0,0,0,0.5); border:1px solid var(--line-soft); font-size:15px; line-height:1.6; color:#cfcfdf; }
+  .copyblock .cb-label { font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--cyan-soft); margin-bottom:8px; }
+  .copybtn {
+    position:absolute; top:10px; right:10px; font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    padding:5px 12px; border-radius:999px; border:1px solid var(--pill-border); background:var(--pill-bg); color:var(--cyan-soft); cursor:pointer;
+  }
+  .copybtn:hover { background:rgba(124,247,255,0.14); }
+  .copybtn:focus-visible { outline:2px solid var(--cyan); outline-offset:2px; }
+
+  .formula { font-family:var(--mono); font-size:14px; color:var(--cyan); text-shadow:0 0 20px rgba(124,247,255,0.25); overflow-x:auto; padding:4px 0; white-space:nowrap; }
+  .mantra { margin:56px 0 0; text-align:center; font-family:var(--mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-faint); }
+  .thesis { margin:40px 0 0; text-align:center; font-family:var(--mono); font-weight:700; font-size:clamp(16px,3.4vw,22px); text-transform:uppercase; color:var(--cyan); text-shadow:0 0 24px rgba(124,247,255,0.3); line-height:1.35; }
+</style>
+
+<main class="doc">
+  <div class="masthead"><span style="font-size:14px;">⬡</span><span>Sesefus</span><span class="sep">/</span><span style="color:#7b7b92;">Session Ledger</span></div>
+  <h1>What We Made<br>&amp; What's Next</h1>
+  <p class="standfirst">Everything worth keeping from tonight, one tap deep. Headlines first — open only what you need.</p>
+  <p class="note">This page and <code style="font-family:var(--mono); font-size:0.85em;">docs/session-notes/2026-07-04.md</code> in the repo hold the same content. You don't have to remember any of it. That's the point.</p>
+
+  <details open="">
+    <summary>Shipped tonight <span class="hint">5 things</span></summary>
+    <div class="d-body">
+      <ul class="checks">
+        <li><strong>ETDI v1 pipeline</strong> — memo → Whisper → locked emotion inference → score → vault + dashboard. <code>tools/etdi_pipeline.py</code></li>
+        <li><strong>Image sieve</strong> — screenshots → abstract-notion chunks, same jsonl the text sieve ships to. <code>shredder/image_sieve.py</code></li>
+        <li><strong>DRIFT.md</strong> — the app thesis: six drift forms, one shared loop. <code>docs/DRIFT.md</code></li>
+        <li><strong>The Whole Machine</strong> — the behold-it-all page (artifact, in your gallery next to this one).</li>
+        <li><strong>Cheat sheet + work-tree zip</strong> — full 226-file inventory; repo snapshot sent as download.</li>
+      </ul>
+      <p>All on branch <code>claude/voice-control-integration-635p5x</code>, pushed to <code>Zychs/sesefus</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Decisions locked <span class="hint">so we don't re-argue them</span></summary>
+    <div class="d-body">
+      <ul class="tight">
+        <li><strong>Formula:</strong> your norm wins. <span class="formula">ETDI = √(v² + a² + s²) / (√3 × minutes)</span> Flag threshold recalibrates to ≈ 0.30–0.35. <em>Not yet in code.</em></li>
+        <li><strong>Drift layer (v2):</strong> EMA baseline (η ≈ 0.9) + per-axis MAD σ + Euclidean norm of the normalized residual. Flag when D &gt; τ ≈ 2 — "a two-sigma day <em>for you</em>." Collapses to your norm when no history exists.</li>
+        <li><strong>0.9.3 capture path:</strong> Python + sounddevice records for the alpha. The Zig engine stays the vision but does <strong>not</strong> gate shipping.</li>
+        <li><strong>Voice control:</strong> push-to-talk, not wake-word. Boring and reliable ships; "hey sesefus" is a rabbit hole.</li>
+        <li><strong>Testers without GPUs:</strong> heuristic backend by default, Ollama optional.</li>
+        <li><strong>Positioning:</strong> drift instrument, not therapy app. "A mirror with a memory."</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>Open loops, ranked <span class="hint">the tangent analysis</span></summary>
+    <div class="d-body">
+      <p><span class="score hot">5/5</span> <strong>Voice control never built</strong> — the branch's literal name; your accessibility need; everything else gets easier once you can drive this by speaking. <em>Trunk.</em></p>
+      <p><span class="score hot">5/5</span> <strong>Scoring math one decision behind</strong> — norm formula + drift layer agreed, not implemented. Small work, do before real scores accrue.</p>
+      <p><span class="score">4/5</span> <strong>No real data yet</strong> — six memos transcript-less; <code>--wav</code> can't backfill a manifest (needs an <code>--into-manifest</code> flag); image sieve untested against a real vision model.</p>
+      <p><span class="score">3/5</span> <strong>Neurialab/RSDC</strong> — paper needs an empirical section (the drift layer IS the experiment); calibration-drift reading (watching the model, not you) named and parked.</p>
+      <p><span class="score">2/5</span> <strong>Quin's actual approach</strong> — still unknown; I guessed. One voice memo from you settles it.</p>
+      <p><span class="score">2/5</span> <strong>Hygiene</strong> — wav-* test rows double-count vs aje-* rows; duplicate vite configs; v2 ETDI items parked by design. Drop for now.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Distance to 0.9.3 testers <span class="hint">2–3 build sessions + your evenings</span></summary>
+    <div class="d-body">
+      <div class="tblwrap"><table>
+        <tbody><tr><th>#</th><th>Work</th><th>Who</th><th>Size</th></tr>
+        <tr><td>1</td><td><code>voice.py</code> — PTT capture, ~6-intent grammar, journal mode</td><td>me</td><td>1 session</td></tr>
+        <tr><td>2</td><td><code>--into-manifest</code> backfill + norm formula switch</td><td>me</td><td>small</td></tr>
+        <tr><td>3</td><td>De-personalize hardcoded paths (bardw, T:\) into config</td><td>me</td><td>small</td></tr>
+        <tr><td>4</td><td>install.bat + run.bat + README-TESTERS + changelog stubs</td><td>me</td><td>1 session</td></tr>
+        <tr><td>5</td><td>Real mic + real Windows + 5080 verification</td><td><strong>you</strong></td><td>1–2 evenings</td></tr>
+      </tbody></table></div>
+      <p>Gating resource is your testing evenings, not code. Calendar-honest: a week or two of evenings. Tester zero: Quin?</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The pitch kit <span class="hint">tap copy, say it out loud</span></summary>
+    <div class="d-body">
+      <div class="copyblock"><div class="cb-label">One-liner</div><button class="copybtn" type="button">copy</button><span class="cb-text">Sesefus is a voice journal that notices when you're drifting — from your sleep, your mood, your own baseline — before you do.</span></div>
+      <div class="copyblock"><div class="cb-label">30 seconds</div><button class="copybtn" type="button">copy</button><span class="cb-text">When I was in rehab they took my phone, and my days just blurred. I couldn't tell you what Tuesday felt like. So I built the thing I needed: you talk to it for sixty seconds a day — that's it, you just talk — and it learns what your normal sounds like. Then when you start sliding — sleep drifting, mood drifting, weeks starting to blur again — it shows you, quietly, before it costs you something. Everything stays on your own machine. No cloud, no subscription, no therapist branding. It's not therapy. It's a mirror with a memory.</span></div>
+      <div class="copyblock"><div class="cb-label">Tester ask</div><button class="copybtn" type="button">copy</button><span class="cb-text">I built a voice journal that catches you drifting before you notice it yourself. I need three people to talk to it for sixty seconds a day for two weeks and tell me where it's annoying. You'd be tester zero.</span></div>
+      <div class="copyblock"><div class="cb-label">Technical (Quin, engineers)</div><button class="copybtn" type="button">copy</button><span class="cb-text">Everything's local — Whisper and a 7B on my own GPU, encrypted SQLite vault, no cloud calls ever. Each memo becomes a point in emotion-space; I track your Mahalanobis drift off your own rolling baseline, so the flags are calibrated to you, not a population. The whole app is one loop: record actual, infer baseline, norm the residual, nudge.</span></div>
+      <p><strong>Rules:</strong> lead with a person in a moment, never architecture. One drift per pitch (days blurring). World-building words stay in the repo: say "getting your days back," not "negentropic refinement." One company, one product: <em>Neurialab builds drift-correction instruments; sesefus is the first.</em></p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Traps to remember <span class="hint">from the fact-check</span></summary>
+    <div class="d-body">
+      <ul class="tight">
+        <li>All six manifests have <code>durationSeconds: null</code> — paste a transcript without a duration and ETDI divides by a 3-second floor and <strong>inflates wildly</strong>.</li>
+        <li><code>--wav</code> prints the score but never saves the transcript — nothing to copy into a manifest until the backfill flag exists.</li>
+        <li>Manifests already name their audio: read <code>source.sourcePath</code>, don't hunt by date.</li>
+        <li><code>127.0.0.1:3001</code> root is a 404 — it's API-only. The face is the React UI at <code>:5173</code> → sidebar → ETDI.</li>
+        <li>wav-* smoke rows linger in etdi.db and double-count against aje-* rows in the trend.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>Ideas parked warm <span class="hint">not lost, just waiting</span></summary>
+    <div class="d-body">
+      <ul class="tight">
+        <li><strong>Conversation sieve</strong> — third sibling: shred your saved AI chats into the same debris/vector pipeline, so the useful bits become searchable instead of guilt in a folder. Ingest needs zero changes.</li>
+        <li><strong>Attention drift</strong> — weekly histogram of image-sieve concept tags vs your trailing baseline: "your hands wandered from what your mouth said mattered."</li>
+        <li><strong>Cadence drift</strong> — scheduled journal time vs actual entry timestamps; data already exists in manifests.</li>
+        <li><strong>Calibration drift</strong> — same math pointed at the model: LLM-inferred emotion vs occasional self-report. The most on-brand use of the RSDC name.</li>
+        <li><strong>Salience gate fallback</strong> — if trivia rants pollute flags under the norm formula, s·√(v²+a²) returns as a filter, not a formula.</li>
+      </ul>
+    </div>
+  </details>
+
+  <p class="thesis">Neurialab builds drift-correction<br>instruments. Sesefus is the first.</p>
+  <div class="mantra">For Everyone · Voice-First · Unhurried · Negentropic</div>
+</main>
+<footer style="max-width:44rem;margin:40px auto 60px;padding:0 1.25rem;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5a5a70;text-align:center;">
+Curated public excerpts — full source in private repos.<br>
+Neurialab builds drift-correction instruments; Sesefus is the first.
+</footer>
+</body>
+</html>

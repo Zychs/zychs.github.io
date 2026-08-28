@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact Scanner — session finder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap">
+<style>
+:root { --accent:#7cf7ff; --border:#272739; }
+body { margin:0; background: radial-gradient(circle at top, #17172a 0%, #050509 55%, #000 100%); color:#e7e7f2; font-family:'Outfit',system-ui,sans-serif; }
+.site-header { position:sticky; top:0; z-index:50; background:rgba(6,6,12,0.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
+.site-header .wrap { max-width:1120px; margin:0 auto; padding:0 1.25rem; display:flex; align-items:center; justify-content:space-between; height:52px; font-family:'JetBrains Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.16em; }
+.brand { color:var(--accent); font-weight:700; }
+.nav a { color:#8e8eaa; margin-left:1.1rem; text-decoration:none; }
+.nav a:hover { color:#7cf7ff; }
+main { box-sizing:border-box; max-width:46rem; margin:0 auto; padding:64px clamp(24px,5vw,56px) 96px; font-weight:300; font-size:17px; line-height:1.72; }
+h1 { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(34px,6vw,52px); line-height:1.02; letter-spacing:0.01em; text-transform:uppercase; margin:22px 0 0; color:#f4f4fb; }
+.kicker { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(124,247,255,0.85); }
+.lead { margin:18px 0 0; font-size:clamp(17px,2.4vw,21px); line-height:1.45; color:#a7a7bd; max-width:34rem; }
+.pill { display:inline-block; margin-top:16px; padding:4px 11px; border-radius:999px; border:1px solid rgba(124,247,255,0.22); color:#9fe9f1; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; }
+h2 { font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:#7cf7ff; margin:36px 0 10px; }
+ul { margin:0; padding-left:1.2rem; color:#c7c7da; }
+li { margin:8px 0 0; }
+a { color:#7cf7ff; }
+.note { margin:36px 0 0; font-family:'JetBrains Mono',monospace; font-size:12px; color:#6c6c83; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div><span class="brand">⬡ Scanner</span> <span style="color:#5a5a70">/ nearly done</span></div>
+    <nav class="nav">
+      <a href="../index.html">Home</a>
+      <a href="instruments.html">Instruments</a>
+      <a href="circadia.html">Circadia</a>
+      <a href="artifact-scanner.html">Scanner</a>
+      <a href="prologue.html">Prologue</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="kicker">⬡ Finder · Windows</div>
+  <h1>Artifact<br>Scanner</h1>
+  <p class="lead">Finds Grok, Claude, and Cursor sessions. Shows a map. Leaves the transcript on disk.</p>
+  <span class="pill">status · nearly done</span>
+
+  <h2>What it is</h2>
+  <p>A native window on <code>127.0.0.1:8765</code>. One card column. Three agent tabs. Preview is a map, not a chat dump. Archive writes diffs. It does not delete your sessions.</p>
+
+  <h2>What it is not</h2>
+  <ul>
+    <li>Not Circadia. It does not run the alarm daemon.</li>
+    <li>Not a Sesefus host. Inventory only.</li>
+    <li>Not an IDE. Paths open in an external editor.</li>
+  </ul>
+
+  <h2>Doors</h2>
+  <p>Repo: <a href="https://github.com/Zychs/artifact-scanner">Zychs/artifact-scanner</a>. Thin README only. House notes stay off GitHub.</p>
+  <p>Sister: <a href="circadia.html">Circadia</a>.</p>
+  <p class="note">Zig serve is held. Runtime is Python <code>win_serve.py</code>.</p>
+</main>
+</body>
+</html>

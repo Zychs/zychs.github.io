@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sesefus — Command Cheatsheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap">
+<style>
+:root { --accent:#7cf7ff; --border:#272739; }
+body { margin:0; background:radial-gradient(circle at top,#17172a 0%,#050509 55%,#000 100%); color:#e7e7f2; font-family:'Outfit',system-ui,sans-serif; }
+.site-header { position:sticky;top:0;z-index:50;background:rgba(6,6,12,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(10px); }
+.site-header .wrap { max-width:1120px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:52px;font-family:"JetBrains Mono",monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.16em; }
+.brand { color:var(--accent);font-weight:700; }
+.nav a { color:#8e8eaa;margin-left:1.1rem;text-decoration:none; } .nav a:hover { color:#7cf7ff; }
+.doc { max-width: 960px; margin: 0 auto; padding: 32px 1.25rem 80px; font-size:14.5px; line-height:1.6; }
+.doc h1 { font-family:"JetBrains Mono",monospace; font-size:clamp(26px,5vw,40px); text-transform:uppercase; margin:8px 0 16px; color:#f4f4fb; }
+.doc h2 { font-family:"JetBrains Mono",monospace; font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:#9fe9f1; margin:28px 0 6px; border-bottom:1px solid #272739; padding-bottom:4px; }
+.doc code { font-family:"JetBrains Mono",monospace; background:rgba(124,247,255,.08); padding:1px 5px; border-radius:4px; color:#9fe9f1; }
+.doc pre { background:#0a0a14; padding:12px; border-radius:8px; border:1px solid #272739; overflow:auto; font-size:12px; }
+.doc table { border-collapse:collapse; width:100%; margin:10px 0; font-size:12.5px; }
+.doc th, .doc td { border:1px solid #272739; padding:5px 6px; text-align:left; vertical-align:top; }
+.doc th { font-family:"JetBrains Mono",monospace; font-size:9px; text-transform:uppercase; color:#6c6c83; background:#101018; }
+.doc strong { color:#f4f4fb; }
+.note { font-size:11px; color:#6c6c83; font-family:"JetBrains Mono",monospace; }
+</style>
+</head><body>
+<header class="site-header"><div class="wrap">
+  <div><span class="brand">⬡ Neurialab</span> <span style="color:#5a5a70">/ Sesefus</span></div>
+  <nav class="nav"><a href="../index.html">Home</a><a href="prologue.html">Prologue</a><a href="machine.html">Machine</a><a href="drift.html">Drift</a><a href="cheatsheet.html">Cheatsheet</a><a href="ledger-2026-07-04.html">Ledger</a></nav>
+</div></header>
+<main class="doc">
+<h1>Sesefus — Command Cheatsheet</h1>
+<p class="note">Editorial-stage snapshot. wired = real today, stub = declared, legacy = phasing out. Matches the Quick CLI Ledger artifact.</p>
+<p><h1>Sesefus — Command Cheatsheet (editorial-stage ledger)</h1></p><p>&gt; snapshot: 2026-07-05 · source: &quot;Quick CLI Ledgar for Editorial Stage&quot; artifact; sourced from sesefus docs/CLI.md, docs/sesephus_help.md, src/main.zig — verified against code</p><p>Audio-first growth engine: circadian rhythm cues, encrypted voice journaling,
+Stoic reflection. Everything routes through the Zig CLI or its mirrored HTTP
+API. States: <strong>wired</strong> = real logic, works today · <strong>stub</strong> = parses, prints,
+no-op · <strong>legacy</strong> = kept for compat, phasing out.</p><p><h2>Invocation &amp; role — UNIFIED BINARY</h2></p><p>One <code>sesefus</code> executable replaces the old <code>host.exe</code> / <code>client.exe</code>. First
+run prompts for a role and persists it to <code>runtime.json</code>, then self-restarts.</p><p>| Command | State | Notes |
+|---|---|---|
+| <code>sesefus --role host\|client</code> | wired | Scheduler daemon or edge listener; persisted after first pick |
+| <code>sesefus --reset-role</code> | wired | Clear saved role; next launch re-prompts |
+| <code>sesefus --host &lt;ip\|auto&gt; --rescan</code> | wired | Client target host; auto/rescan = LAN discovery on port 5000 |
+| <code>sesefus --port &lt;port&gt;</code> · <code>--non-interactive</code> · <code>--no-record</code> | wired | Client TCP port (def 5000); skip record prompt; disable mic |</p><p><h2>Global flags — parsed by cli.zig ahead of every verb</h2></p><p><code>--production</code> (strict mode, destructive ops demand confirm) ·
+<code>--dry-run</code>/<code>-n</code> · <code>--json</code> · <code>--help</code>/<code>-h</code> — all wired.</p><p><h2>CLI verbs</h2></p><p>| Command | State | Notes |
+|---|---|---|
+| <code>status</code> | wired | Engine state, connected clients, next rhythm cue |
+| <code>journal record [minutes]</code> | wired | Voice entry, defaults 3–10 min (core path) |
+| <code>journal review last</code> | wired | Play back most recent entry |
+| <code>journal prompt stoic</code> | wired | Spoken Stoic reflection prompt |
+| <code>rhythm schedule morning\|evening</code> | wired | Ritual alarm sequence per end of day |
+| <code>rhythm next</code> | wired | &quot;What is my next growth anchor?&quot; |
+| <code>stoic daily-reflection</code> | wired | Guided evening audio review |
+| <code>stoic virtue-check &lt;virtue&gt;</code> | wired | courage · wisdom · justice · temperance |
+| <code>stoic obstacle</code> | wired | Speak an obstacle, get reframing logic |
+| <code>lead qualify --handle &lt;user&gt;</code> | wired | POSTs prompts/qualify-post.md to LOCAL_LLM_URL (def :8000) |
+| <code>lead mine stoic</code> | <strong>stub</strong> | Print-only — logic still in host dispatcher |
+| <code>lead feed journal</code> | <strong>stub</strong> | Print-only |
+| <code>vault status</code> | wired | Fill level + metadata |
+| <code>vault key-verify &lt;hex&gt;</code> | wired | Check 64-char key against the vault |
+| <code>vault backup [dest]</code> | wired | Safe copy of encrypted DB |
+| <code>vault ingest-archive --dry-run --limit N</code> | wired | Shell the dual-archive Python ingress |</p><p><h2>Host — direct flags (daemon)</h2></p><p><code>--vault &lt;path&gt;</code> (def <code>V:\sesephus_vault.db</code> → <code>./</code> fallback) ·
+<code>--read-vault</code> (dump decrypted metadata, exit) ·
+<code>--extract &lt;idx&gt; &lt;out.wav&gt;</code> — all wired.</p><p><h2>Host shell (interactive REPL)</h2></p><p><strong>Alarms</strong> (actions: <code>record_audio</code>, <code>play_sound</code>):
+<code>alarm &lt;client&gt; &lt;sec&gt; &lt;action&gt; &lt;dur&gt;</code> · <code>alarm_group</code> · <code>alarm_interval</code>
+(count alarms spaced over dur) · <code>alarm_adjust &lt;parent&gt; &lt;spacing&gt; &lt;jitter_ms&gt;</code>
+· <code>alarm_bulk</code> · <code>alarm_toggle true|false</code> — all wired.</p><p><strong>Subgroups:</strong> <code>group_create &lt;name&gt; &lt;ids&gt;</code> · <code>group_rename</code> · <code>group_edit</code> ·
+<code>group_delete</code> — all wired.</p><p><strong>Vault ops:</strong> <code>vault_key_verify</code> · <code>vault_audit</code> (tamper check) ·
+<code>vault_profile</code> (r/w benchmark) · <code>vault_refactor &lt;dest&gt;</code> ·
+<code>vault_shuffle &lt;dest&gt;</code> (randomize page layout) ·
+<code>vault_distribute &lt;prefix&gt;</code> (shard by client ID) — all wired.</p><p><h2>Storage &amp; signal tooling (SSFS · ETDI)</h2></p><p>**<code>ssfs/drive-mapping.json</code> is the single source of truth for drive letters —
+never hardcode V: / E: / T:.**</p><p>| Command | Notes |
+|---|---|
+| <code>node ssfs/storage/config-engine.js</code> | Verify drives by label, fail-loud, receipt → <code>V:\ssfs-vault\state\ssfs-verified.json</code>. Run before big ops |
+| <code>python tools/ssfs_config.py</code> | Print resolved cold-archive path + existence |
+| <code>python tools/etdi_pipeline.py --backend grok</code> | Memo → Whisper → emotion JSON → etdi.db (backends: ollama def · grok · lexical) |
+| <code>GET /api/etdi/{trend,flags,entries}</code> | Dashboard surfacing (EtdiPanel.jsx) |</p><p><h2>Legacy (compat only)</h2></p><p><code>alarm schedule …</code> → use <code>rhythm schedule</code> · <code>group create …</code> → use the
+<code>group_create</code> shell command.</p><p><h2>Ports</h2></p><p>| Port | Service |
+|---|---|
+| 5000 | Zig host — TCP socket (alarms, LAN discovery) |
+| 3001 | FastAPI — Whisper transcription / AI bridge |
+| 5173 | Vite/React dashboard (proxies /api → 3001) |</p><p><h2>Review watch-outs</h2></p><p>- <strong>Binary rename:</strong> docs still say <code>host.exe</code>/<code>client.exe</code>; shipped artifact
+  is one <code>sesefus</code> binary with <code>--role</code>.
+<li><strong>Stub gap:</strong> <code>commands/*.zig</code> modules are print-only scaffolding except</li>
+  <code>lead qualify</code> — real logic remains in the host dispatcher.
+</p>
+</main>
+<footer style="max-width:960px;margin:20px auto 70px;padding:16px 1.25rem;border-top:1px solid #272739;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5a5a70;text-align:center;">
+Curated public excerpts — full source in private repos.<br>
+Neurialab builds drift-correction instruments; Sesefus is the first.
+</footer>
+</body></html>
