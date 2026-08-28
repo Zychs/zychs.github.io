@@ -145,7 +145,7 @@ body { margin:0; background: radial-gradient(circle at top, #17172a 0%, #050509 
       <p><span class="score hot">5/5</span> <strong>Scoring math one decision behind</strong> — norm formula + drift layer agreed, not implemented. Small work, do before real scores accrue.</p>
       <p><span class="score">4/5</span> <strong>No real data yet</strong> — six memos transcript-less; <code>--wav</code> can't backfill a manifest (needs an <code>--into-manifest</code> flag); image sieve untested against a real vision model.</p>
       <p><span class="score">3/5</span> <strong>Neurialab/RSDC</strong> — paper needs an empirical section (the drift layer IS the experiment); calibration-drift reading (watching the model, not you) named and parked.</p>
-      <p><span class="score">2/5</span> <strong>Quin's actual approach</strong> — still unknown; I guessed. One voice memo from you settles it.</p>
+      <p><span class="score">2/5</span> <strong>Tester zero's actual approach</strong> — still unknown; I guessed. One voice memo from you settles it.</p>
       <p><span class="score">2/5</span> <strong>Hygiene</strong> — wav-* test rows double-count vs aje-* rows; duplicate vite configs; v2 ETDI items parked by design. Drop for now.</p>
     </div>
   </details>
@@ -161,7 +161,7 @@ body { margin:0; background: radial-gradient(circle at top, #17172a 0%, #050509 
         <tr><td>4</td><td>install.bat + run.bat + README-TESTERS + changelog stubs</td><td>me</td><td>1 session</td></tr>
         <tr><td>5</td><td>Real mic + real Windows + 5080 verification</td><td><strong>you</strong></td><td>1–2 evenings</td></tr>
       </tbody></table></div>
-      <p>Gating resource is your testing evenings, not code. Calendar-honest: a week or two of evenings. Tester zero: Quin?</p>
+      <p>Gating resource is your testing evenings, not code. Calendar-honest: a week or two of evenings. Tester zero: one named candidate, asked privately.</p>
     </div>
   </details>
 
@@ -171,7 +171,7 @@ body { margin:0; background: radial-gradient(circle at top, #17172a 0%, #050509 
       <div class="copyblock"><div class="cb-label">One-liner</div><button class="copybtn" type="button">copy</button><span class="cb-text">Sesefus is a voice journal that notices when you're drifting — from your sleep, your mood, your own baseline — before you do.</span></div>
       <div class="copyblock"><div class="cb-label">30 seconds</div><button class="copybtn" type="button">copy</button><span class="cb-text">When I was in rehab they took my phone, and my days just blurred. I couldn't tell you what Tuesday felt like. So I built the thing I needed: you talk to it for sixty seconds a day — that's it, you just talk — and it learns what your normal sounds like. Then when you start sliding — sleep drifting, mood drifting, weeks starting to blur again — it shows you, quietly, before it costs you something. Everything stays on your own machine. No cloud, no subscription, no therapist branding. It's not therapy. It's a mirror with a memory.</span></div>
       <div class="copyblock"><div class="cb-label">Tester ask</div><button class="copybtn" type="button">copy</button><span class="cb-text">I built a voice journal that catches you drifting before you notice it yourself. I need three people to talk to it for sixty seconds a day for two weeks and tell me where it's annoying. You'd be tester zero.</span></div>
-      <div class="copyblock"><div class="cb-label">Technical (Quin, engineers)</div><button class="copybtn" type="button">copy</button><span class="cb-text">Everything's local — Whisper and a 7B on my own GPU, encrypted SQLite vault, no cloud calls ever. Each memo becomes a point in emotion-space; I track your Mahalanobis drift off your own rolling baseline, so the flags are calibrated to you, not a population. The whole app is one loop: record actual, infer baseline, norm the residual, nudge.</span></div>
+      <div class="copyblock"><div class="cb-label">Technical (engineers)</div><button class="copybtn" type="button">copy</button><span class="cb-text">Everything's local — Whisper and a 7B on my own GPU, encrypted SQLite vault, no cloud calls ever. Each memo becomes a point in emotion-space; I track your Mahalanobis drift off your own rolling baseline, so the flags are calibrated to you, not a population. The whole app is one loop: record actual, infer baseline, norm the residual, nudge.</span></div>
       <p><strong>Rules:</strong> lead with a person in a moment, never architecture. One drift per pitch (days blurring). World-building words stay in the repo: say "getting your days back," not "negentropic refinement." One company, one product: <em>Neurialab builds drift-correction instruments; sesefus is the first.</em></p>
     </div>
   </details>
