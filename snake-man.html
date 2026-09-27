@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>SNAKE-MAN: TOROIDAL EDITION</title>
+    <script>
+        // Touch mode: a touch-only device, the Android app (?app=1 / its user agent), or ?pad=1.
+        (() => {
+            const q = new URLSearchParams(location.search);
+            const touchOnly = matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches;
+            const app = q.has('app') || navigator.userAgent.includes('SnakeManApp');
+            if (touchOnly || app || q.has('pad')) document.documentElement.classList.add('touch');
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+        canvas {
+            border: 6px solid #222;
+            border-radius: 18px;
+            box-shadow: 0 0 0 2px #333, 0 0 30px rgba(0, 255, 0, 0.18), inset 0 0 40px #000;
+            image-rendering: pixelated;
+            background: #000;
+            width: min(600px, 92vw);
+            height: auto;
+            touch-action: none;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px 36px;
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 16px;
+            text-shadow: 2px 2px 0 #030;
+            margin-bottom: 10px;
+        }
+        #time.low { color: #f33; }
+        .kin {
+            font-size: 14px;
+            color: #6a6;
+            margin-bottom: 8px;
+            min-height: 1em;
+        }
+        .kin .v { color: #0ff; }
+        .kin .a { color: #f0f; }
+        .help {
+            margin-top: 12px;
+            color: #888;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .legend {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            gap: 2px 14px;
+            margin: 10px auto 0;
+            text-align: left;
+            font-size: 13px;
+            color: #aaa;
+            width: fit-content;
+        }
+        .legend b { font-weight: normal; }
+        .dot { display: inline-block; width: 10px; height: 10px; border-radius: 5px 5px 2px 2px; margin-right: 6px; }
+        /* Touch pad: a joystick and two buttons, shown only in touch mode (html.touch: phones,
+           the Android app, or ?pad=1). */
+        .pad { display: none; }
+        html.touch body { justify-content: flex-start; padding-top: max(10px, env(safe-area-inset-top)); user-select: none; -webkit-user-select: none; }
+        html.touch .stats { font-size: 11px; gap: 4px 16px; margin-bottom: 8px; }
+        html.touch .kin, html.touch .help { display: none; }
+        html.touch .pad {
+            display: flex; align-items: center; justify-content: space-between;
+            width: min(600px, 92vw); margin-top: 18px; touch-action: none;
+        }
+        .stick {
+            position: relative; width: 150px; height: 150px; border-radius: 50%;
+            border: 3px solid #1c4a1c; box-shadow: inset 0 0 24px #000, 0 0 16px rgba(0,255,0,0.12);
+            background: radial-gradient(circle, #102810 0%, #070f07 70%); touch-action: none;
+        }
+        .stick::before, .stick::after {   /* faint 4-way cross: the snake only turns on the grid */
+            content: ''; position: absolute; left: 50%; top: 50%; background: #1c4a1c;
+        }
+        .stick::before { width: 70%; height: 3px; transform: translate(-50%, -50%); }
+        .stick::after { width: 3px; height: 70%; transform: translate(-50%, -50%); }
+        .knob {
+            position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; margin: -31px 0 0 -31px;
+            border-radius: 50%; z-index: 1; pointer-events: none;
+            background: radial-gradient(circle at 35% 35%, #fff6a0, #ffd700 45%, #9a6a00);
+            box-shadow: 0 3px 0 #4a3000, 0 0 12px rgba(255,215,0,0.35);
+        }
+        .btns { display: flex; flex-direction: column; gap: 10px; }
+        .btns button {
+            width: 86px; height: 50px; border-radius: 14px; background: #0c0c14; touch-action: none;
+            font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 11px; color: #0f0;
+            border: 3px solid #1c4a1c; box-shadow: 0 4px 0 #000;
+        }
+        .btns button:active, .btns button.on { transform: translateY(3px); box-shadow: 0 1px 0 #000; }
+        #btnCoat { color: #b89cff; border-color: #4a3a80; }
+        #btnCoat.cool, #btnDash.cool { color: #555; border-color: #2a2a2a; }
+        #btnDash { color: #c89c62; border-color: #6b4a2b; }
+        .rainbow {
+            background: linear-gradient(90deg, #f33, #fa0, #ff3, #3f6, #3cf, #a6f, #f3c);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stats">
+        <div>SCORE: <span id="score">0</span></div>
+        <div>HI: <span id="hi">0</span></div>
+        <div>LIVES: <span id="lives">3</span></div>
+        <div>TIME: <span id="time">5:00</span></div>
+        <div>ZONE: <span id="zone">1/4</span></div>
+        <div>COAT: <span id="coat">READY</span></div>
+        <div>DIG: <span id="dash">READY</span></div>
+    </div>
+    <div class="kin" id="kin"></div>
+
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+    <div class="pad">
+        <div class="stick" id="stick"><div class="knob" id="knob"></div></div>
+        <div class="btns">
+            <button id="btnDash">DIG</button>
+            <button id="btnCoat">COAT</button>
+            <button id="btnPause">PAUSE</button>
+        </div>
+    </div>
+
+    <div class="help">
+        MOVE: ARROWS / WASD / SWIPE • <span style="color:#c89c62">SHIFT: DIG</span> UNDER WALLS • <span style="color:#b89cff">ESC: TURNCOAT</span> • SPACE PAUSE<br>
+        EAT DOTS, SCORE BEFORE 5:00 • <span style="color:#55f">WALLS</span> COST A LIFE • <span class="rainbow">RAINBOWS</span> MAKE GHOSTS EDIBLE<br>
+        WHEN A RETICLE LOCKS, <span style="color:#ddd">BREAK YOUR RHYTHM</span>
+        <div class="legend">
+            <span><span class="dot" style="background:#FF0000"></span>BLINKY</span><b>x</b><span>where you are</span>
+            <span><span class="dot" style="background:#FFB8FF"></span>PINKY</span><b>ẋ</b><span>your velocity</span>
+            <span><span class="dot" style="background:#00FFFF"></span>INKY</span><b>ẍ</b><span>your curve</span>
+            <span><span class="dot" style="background:#FFB800"></span>CLYDE</span><b>∫x</b><span>your loops</span>
+        </div>
+    </div>
+
+    <!-- The game, one module per file (see snake-man/core.js for the layout). Order matters. -->
+    <script src="snake-man/core.js"></script>
+    <script src="snake-man/state.js"></script>
+    <script src="snake-man/view.js"></script>
+    <script src="snake-man/map.js"></script>
+    <script src="snake-man/kin.js"></script>
+    <script src="snake-man/pellets.js"></script>
+    <script src="snake-man/gfx.js"></script>
+    <script src="snake-man/fx.js"></script>
+    <script src="snake-man/anim.js"></script>
+    <script src="snake-man/ghosts.js"></script>
+    <script src="snake-man/coat.js"></script>
+    <script src="snake-man/player.js"></script>
+    <script src="snake-man/dash.js"></script>
+    <script src="snake-man/heal.js"></script>
+    <script src="snake-man/render.js"></script>
+    <script src="snake-man/input.js"></script>
+    <script src="snake-man/game.js"></script>
+</body>
+</html>
