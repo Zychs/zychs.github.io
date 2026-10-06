@@ -9,8 +9,13 @@ window.SM = window.SM || {};
 (() => {
     // --- CONFIG ---
     const GRID_SIZE = 20;
-    const W = 600;                // canvas size in px
-    const VIEW = W / GRID_SIZE;   // 30x30 tiles visible
+    const W = 600;                // canvas height in px (and width on one screen)
+    const VIEW = W / GRID_SIZE;   // 30 tiles visible top to bottom
+    // Two screens (the Thor, see dual.js): the top screen is the game alone, so the canvas widens to
+    // its shape and shows more of the map sideways. Decided once, before anything is drawn.
+    const DUAL = new URLSearchParams(location.search).has('dual')
+        || (() => { try { return !!(window.SnakeManApp && SnakeManApp.dual && SnakeManApp.dual()); } catch (e) { return false; } })();
+    const CW = DUAL ? 1060 : W;   // canvas width in px (1060x600 is about the Thor's 16:9)
     const TILE_COUNT = 90;        // the world is 90x90 tiles and wraps on both axes
     const MIN_CORRIDOR = 3;       // narrowest gap between walls, in tiles (room to juke a lunge)
     const CHUNK = 10;             // map design and ghost spawning both work in 10x10-tile chunks
@@ -27,6 +32,10 @@ window.SM = window.SM || {};
     const RAINBOW_COUNT      = 2;      // rainbow pellets on the map at once
     const RAINBOW_RESPAWN_MS = 25000;  // an eaten one comes back somewhere else after this
     const EVOLVE_MS          = 20000;  // the weakest ghost quietly molts this often
+
+    const FRUIT_EVERY = 50;            // a fruit appears every this many pellets eaten
+    const FRUIT_MS    = 15000;         // ...and rots away if you don't reach it in time
+    const BOOST_MS    = 10000;         // eating it doubles every score for this long
 
     // --- MATH ---
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -86,10 +95,10 @@ window.SM = window.SM || {};
     }
 
     SM.core = {
-        GRID_SIZE, W, VIEW, N, MIN_CORRIDOR, CHUNK, CN,
+        GRID_SIZE, W, CW, DUAL, VIEW, N, MIN_CORRIDOR, CHUNK, CN,
         TIME_LIMIT_MS, START_LIVES, MAX_LIVES,
         LUNGE_OVERSHOOT, DAZE_MS, DAZE_STEP_MS, INVULN_MS,
-        RAINBOW_COUNT, RAINBOW_RESPAWN_MS, EVOLVE_MS,
+        RAINBOW_COUNT, RAINBOW_RESPAWN_MS, EVOLVE_MS, FRUIT_EVERY, FRUIT_MS, BOOST_MS,
         lerp, clamp01, smooth,
         wrap, idx, wdelta, wdeltaF, tdist, chunkOf, cdist, ckey, ckeyDist, DIRS, dirIndex,
         mulberry32, store, on, emit,

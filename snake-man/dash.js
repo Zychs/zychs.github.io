@@ -12,12 +12,10 @@
     const G = SM.G, M = SM.map, fx = SM.fx;
     const { ctx, sx, sy, snap, onScreen } = SM.view;
 
-    const DASH_TILES = 6;       // how far a dash reaches
     const DASH_MIN = 2;         // shortest dash worth taking
     const DIVE_MS = 110;        // head sinking into the hole (you hold still, already safe)
     const BURROW_STEP_MS = 34;  // per tile underground (about 3-4x walking pace)
     const EMERGE_MS = 260;      // head popping back out (you're already moving again)
-    const DASH_COOL_MS = 4000;
     const DIRT = ['#7a5530', '#a57c4a', '#4a3220', '#c89c62'];
     const GRIT = ['#5050f0', '#9a9aff', '#1c1c88'];
 
@@ -32,7 +30,8 @@
     // The farthest landing in reach that's open ground and not somewhere your body still is.
     function plan() {
         const S = G.snake, h = S[0], d = G.direction, path = [];
-        for (let k = 1; k <= DASH_TILES; k++) {
+        const reach = SM.skills.stat('digReach');   // how far a dash reaches (BURROW)
+        for (let k = 1; k <= reach; k++) {
             const x = wrap(h.x + d.x * k), y = wrap(h.y + d.y * k);
             if (M.isFence(x, y) || !M.inDomain(x, y)) break;
             path.push({ x, y });
@@ -92,7 +91,7 @@
         seg.exit = r.tun;
         if (t) { t.exitOpen = true; t.age = 0; }
         run = null;
-        cool = DASH_COOL_MS;
+        cool = SM.skills.stat('digCoolMs') * G.digCoolMul;   // IDLE mode's DIG upgrade
         emergeT = EMERGE_MS;
         fx.burst(seg.x, seg.y, { n: 18, colors: DIRT, speed: 3.5, up: 9, life: 750 });
         emit('surfaced', { walls: r.walls, len: r.path.length });
@@ -161,7 +160,6 @@
     on('placed', () => { run = null; });
 
     SM.dash = {
-        DASH_COOL_MS,
         reset, start, update, tick, drawFloor, headPose,
         get busy() { return !!run; },
         get shielded() { return !!run; },

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>SNAKE-MAN: GLOBE EDITION</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+        canvas {
+            border: 6px solid #222;
+            border-radius: 18px;
+            box-shadow: 0 0 0 2px #333, 0 0 30px rgba(0, 255, 0, 0.18), inset 0 0 40px #000;
+            background: #111;
+            width: min(640px, 92vw);
+            height: auto;
+            aspect-ratio: 1;
+            touch-action: none;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px 28px;
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 14px;
+            text-shadow: 2px 2px 0 #030;
+            margin-bottom: 10px;
+        }
+        #time.low { color: #f33; }
+        .abilities { font-size: 13px; color: #6a6; margin: 10px 0 4px; display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; }
+        .abilities b { color: #0ff; font-weight: normal; }
+        .help { font-size: 13px; color: #6a6; max-width: 640px; text-align: center; line-height: 1.5; }
+        .pad { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
+        .pad button {
+            font: 11px 'Press Start 2P', monospace;
+            padding: 14px 16px;
+            background: #0a2a12;
+            color: #0f0;
+            border: 2px solid #0a0;
+            border-radius: 8px;
+            touch-action: none;
+        }
+        .pad button:focus-visible { outline: 2px solid #ff0; outline-offset: 2px; }
+        a { color: #0c0; }
+    </style>
+</head>
+<body>
+    <div class="stats">
+        <span>SCORE <span id="score">0</span></span>
+        <span>HI <span id="hi">0</span></span>
+        <span id="lives">♥♥♥</span>
+        <span id="time">5:00</span>
+        <span>ZONE <span id="zone">1/4</span></span>
+    </div>
+    <canvas id="globe" width="640" height="640"></canvas>
+    <div class="abilities">
+        <span>DIG (Shift) <b id="dig">ready</b></span>
+        <span>COAT (Esc) <b id="coat">ready</b></span>
+        <span>SOUND (V) <b id="mute">on</b></span>
+    </div>
+    <div class="pad">
+        <button type="button" data-action="left">◀ LEFT</button>
+        <button type="button" data-action="dig">DIG</button>
+        <button type="button" data-action="coat">COAT</button>
+        <button type="button" data-action="pause">❚❚</button>
+        <button type="button" data-action="right">RIGHT ▶</button>
+    </div>
+    <p class="help">
+        The world is a globe. You always go straight, and a turn is 120°: three ways, never four.
+        Eat dots, dodge walls and ghosts, and grab a rainbow to make the ghosts edible.
+        Five dots in a row heal a life. Dig dives under walls; the coat fools the ghosts.
+        <a href="snake-man.html">Flat edition</a>
+    </p>
+    <script src="globe/ternary.js"></script>
+    <script src="globe/rules.js"></script>
+    <script src="globe/sfx.js"></script>
+    <script src="globe/draw.js"></script>
+</body>
+</html>

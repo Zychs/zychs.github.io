@@ -290,6 +290,7 @@
         if (!pool.length) return;
         pool.sort((a, b) => fitRate(a) - fitRate(b) || a.gen - b.gen);
         breed(pool[0]);
+        emit('evolve', { gen: pool[0].gen });
     }
 
     function attackers() {
@@ -414,14 +415,14 @@
             return;
         }
 
-        if (SM.player.checkContacts()) return;
+        if (SM.player.checkContacts() || !g.active) return;
 
         // Lunging into the body: ghost bonks off, tail gets severed. Underground segments are
         // out of reach.
         const S = G.snake;
         for (let i = 1; i < S.length; i++) {
             if (S[i].under || S[i].x !== g.x || S[i].y !== g.y) continue;
-            if (G.invuln <= 0 && S.length > 2) {
+            if (G.invuln <= 0 && !SM.special.deadly() && S.length > 2) {
                 const lost = S.length - Math.max(2, i);
                 S.length = Math.max(2, i);
                 if (lost > 0) { fx.popup(g.x, g.y, 'SNIP -' + lost, '#f66'); g.fit += 1; emit('snip', lost); }
@@ -439,6 +440,7 @@
 
     function updateGhost(g, dt) {
         if (!g.active) return;
+        if (g.frozen > 0) return;   // frozen solid (FREEZE, see special.js): time stands still for it
         g.t += dt;
         g.life += dt;
         g.cool -= dt;
@@ -470,7 +472,7 @@
                 if (g.acc >= step) {
                     g.acc -= step;
                     moveGhost(g, g.target);
-                    if (SM.player.checkContacts()) return;
+                    if (SM.player.checkContacts() || !g.active) return;
                 }
                 if (g.cool <= 0 && G.invuln <= 0 && d <= attackRange(g) && attackers() < D.maxAttackers()) {
                     enterState(g, 'aim');
@@ -489,7 +491,7 @@
             case 'lunge': {
                 g.acc += dt;
                 const step = lungeStepOf(g);
-                while (g.acc >= step && g.state === 'lunge' && G.mode === 'play') {
+                while (g.acc >= step && g.state === 'lunge' && g.active && G.mode === 'play') {
                     g.acc -= step;
                     lungeStep(g);
                 }
@@ -501,7 +503,7 @@
                 if (g.acc >= step) {
                     g.acc -= step;
                     moveGhost(g, head(), { flee: true });
-                    if (SM.player.checkContacts()) return;
+                    if (SM.player.checkContacts() || !g.active) return;
                 }
                 if (g.t >= g.dazeFor) {
                     enterState(g, 'hunt');

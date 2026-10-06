@@ -4,9 +4,9 @@
 // Reads game state, never changes it (the one exception: ghosts' fade-in visibility).
 'use strict';
 (() => {
-    const { GRID_SIZE, W, VIEW, N, CN, CHUNK, idx, wdelta, dirIndex, on } = SM.core;
+    const { GRID_SIZE, W, CW, DUAL, N, CN, CHUNK, idx, wdelta, dirIndex, on } = SM.core;
     const G = SM.G, M = SM.map, K = SM.kin, gfx = SM.gfx, fx = SM.fx;
-    const { canvas, dctx, scene, ctx, cam, P, S, snap, sx, sy, onScreen } = SM.view;
+    const { canvas, dctx, scene, ctx, cam, P, S, snap, sx, sy, onScreen, viewHalf, viewHalfX, ZOOM_MIN } = SM.view;
     const { pixelLine, pixelArrow, pixelRing, pixelText } = gfx;
 
     // District colours: floor studs and minimap tint, so the layout reads at a glance.
@@ -41,11 +41,11 @@
     // Visit every tile around the camera: fn(wx, wy, left, top) with the tile's screen corner.
     function forViewTiles(fn) {
         const bx = Math.floor(cam.x), by = Math.floor(cam.y);
-        const half = VIEW / 2 + 2;
+        const half = Math.ceil(Math.max(viewHalf(), viewHalfX())) + 2;
         for (let j = -half; j <= half; j++) {
             for (let i = -half; i <= half; i++) {
                 const wx = bx + i, wy = by + j;
-                fn(wx, wy, W / 2 + (wx - cam.x) * GRID_SIZE - GRID_SIZE / 2, W / 2 + (wy - cam.y) * GRID_SIZE - GRID_SIZE / 2);
+                fn(wx, wy, CW / 2 + (wx - cam.x) * GRID_SIZE - GRID_SIZE / 2, W / 2 + (wy - cam.y) * GRID_SIZE - GRID_SIZE / 2);
             }
         }
     }
@@ -79,7 +79,11 @@
         const hb = Math.floor(now / 80) % gfx.HUES;
         for (const p of SM.pellets.list) {
             if (!onScreen(p.x, p.y)) continue;
-            const spr = p.rainbow ? gfx.rainbowPelletSprite(hb, pf) : gfx.pelletSprite(pf);
+            if (p.fruit) {   // rotting: blink through the last 3 seconds
+                const f = SM.pellets.fruit;
+                if (f && f.t < 3000 && Math.floor(now / 120) % 2) continue;
+            }
+            const spr = p.fruit ? gfx.fruitSprite(pf) : p.rainbow ? gfx.rainbowPelletSprite(hb, pf) : gfx.pelletSprite(pf);
             ctx.drawImage(spr, snap(sx(p.x) - GRID_SIZE / 2), snap(sy(p.y) - GRID_SIZE / 2) + SM.anim.breathe(p, now));
         }
     }
@@ -88,8 +92,10 @@
     // Every wall edge that faces the snake's head casts a shadow quad away from it. The shadows
     // are rasterised at sub-pixel resolution, filled with a dithered dark pattern, and laid over
     // the floor. Walls are drawn on top so the map stays readable; ghosts in shadow are hidden.
+    // The shade covers the widest zoom: SHADE_PAD px of world past each screen edge.
+    const SHADE_PAD = (W / ZOOM_MIN - W) / 2, SHADE_PAD_X = (CW / ZOOM_MIN - CW) / 2;
     const shade = document.createElement('canvas');
-    shade.width = shade.height = W / P;
+    shade.width = (CW + 2 * SHADE_PAD_X) / P; shade.height = (W + 2 * SHADE_PAD) / P;
     const sctx = shade.getContext('2d');
     const shadePattern = (() => {
         const c = document.createElement('canvas'); c.width = c.height = 2;
@@ -100,11 +106,11 @@
     })();
 
     function drawOcclusion(ex, ey) {
-        const g = GRID_SIZE, FAR = W * 2;
+        const g = GRID_SIZE, FAR = W * 3;
         sctx.setTransform(1, 0, 0, 1, 0, 0);
         sctx.globalCompositeOperation = 'source-over';
         sctx.clearRect(0, 0, shade.width, shade.height);
-        sctx.setTransform(1 / P, 0, 0, 1 / P, 0, 0);
+        sctx.setTransform(1 / P, 0, 0, 1 / P, SHADE_PAD_X / P, SHADE_PAD / P);
         sctx.beginPath();
         const far = ([px, py]) => { const dx = px - ex, dy = py - ey, m = Math.hypot(dx, dy) || 1; return [px + dx / m * FAR, py + dy / m * FAR]; };
         const quad = (a, b) => {
@@ -136,7 +142,7 @@
         ctx.save();
         ctx.imageSmoothingEnabled = false;
         ctx.globalAlpha = 0.88;
-        ctx.drawImage(shade, 0, 0, W, W);
+        ctx.drawImage(shade, -SHADE_PAD_X, -SHADE_PAD, CW + 2 * SHADE_PAD_X, W + 2 * SHADE_PAD);
         ctx.restore();
     }
 
@@ -168,7 +174,7 @@
         if (SM.anim.swellFlash(g)) mode = 'flash';
         let look = lookIndex(g.dir.x, g.dir.y);
         if (g.state === 'aim') look = lookIndex(wdelta(g.x, g.target.x), wdelta(g.y, g.target.y));
-        const col = g.traitor ? coat.TRAITOR_COLOR : g.color;
+        const col = g.traitor ? coat.TRAITOR_COLOR : SM.zombies.tint(g.color);   // zombies rot green
         const sprite = gfx.ghostSprite(col, frame, look, mode, SM.ghosts.tier(g), g.immune);
 
         // lunge afterimages
@@ -183,6 +189,7 @@
         if (k === 1) ctx.drawImage(sprite, snap(x), snap(y));
         else { const w = snap(s * k); ctx.drawImage(sprite, snap(x + s / 2 - w / 2), snap(y + s - w), w, w); }
         ctx.globalAlpha = 1;
+        SM.special.drawIce(g, snap(x), snap(y), now);
         if (g.state === 'aim' && g.locked && g.vis > 0.5) pixelText('!', x + s / 2, y - 3, 10, '#fff', col);
         // while you're disguised, ghosts that can see you show it: ? watching, ! nearly onto you
         else if (coat.disguised && g.vis > 0.5 && coat.watching(g)) {
@@ -252,7 +259,9 @@
         ctx.globalAlpha = blink ? 0.3 : 1;
 
         // under a prism the body cycles the spectrum, and flickers back to normal as it runs out
-        const rainbow = G.prism > 0 && !(G.prism < 1500 && Math.floor(now / 120) % 2);
+        // ...and for the whole of a RAINBOW SNAKE (special.js)
+        const fading = t => t < 1500 && Math.floor(now / 120) % 2;
+        const rainbow = (G.prism > 0 && !fading(G.prism)) || (G.rainbowT > 0 && !fading(G.rainbowT));
         // in disguise the body goes ghostly lavender, flickering as the cover runs out
         const disguise = coat.disguised && !(coat.coatT < 1500 && Math.floor(now / 120) % 2);
         const roll = Math.floor(now / 60);
@@ -294,24 +303,28 @@
             ctx.fillStyle = gfx.rgbStr(gfx.mix([255, 220, 60], [255, 40, 40], coat.suspicion));
             ctx.fillRect(bx, by, snap(bw * coat.suspicion), 4);
             ctx.fillStyle = coat.COAT_COLOR;
-            ctx.fillRect(bx, by + 4 + P, snap(bw * Math.max(0, coat.coatT) / coat.COAT_MS), P);   // cover time left
+            ctx.fillRect(bx, by + 4 + P, snap(bw * Math.max(0, coat.coatT) / coat.coatLen), P);   // cover time left
         }
     }
 
     function drawMinimap(now) {
-        const size = minimap.width, ox = W - size - 8, oy = 8, s = MM_SCALE;
+        const size = minimap.width, ox = CW - size - 8, oy = 8, s = MM_SCALE;
         ctx.save();
         ctx.globalAlpha = 0.9;
         ctx.drawImage(minimap, ox, oy);
         ctx.beginPath(); ctx.rect(ox, oy, size, size); ctx.clip();
         ctx.fillStyle = '#ff0';
         const pellets = SM.pellets.list;
-        pellets.forEach(p => { if (!p.rainbow) ctx.fillRect(ox + p.x * s - 0.5, oy + p.y * s - 0.5, 2.5, 2.5); });
+        pellets.forEach(p => { if (!p.rainbow && !p.fruit) ctx.fillRect(ox + p.x * s - 0.5, oy + p.y * s - 0.5, 2.5, 2.5); });
         pellets.forEach(p => {
             if (!p.rainbow) return;
             ctx.fillStyle = gfx.rgbStr(gfx.hsl((now / 4) % 360));
             ctx.fillRect(ox + p.x * s - 1.5, oy + p.y * s - 1.5, 4.5, 4.5);
         });
+        SM.voidmode.drawMinimap(ox, oy, s, now);
+        SM.zombies.drawMinimap(ox, oy, s);
+        const fr = SM.pellets.fruit;
+        if (fr && Math.floor(now / 250) % 2) { ctx.fillStyle = '#f22'; ctx.fillRect(ox + fr.x * s - 1.5, oy + fr.y * s - 1.5, 4.5, 4.5); }
         // with shadows on, the minimap only shows ghosts you can actually see
         G.ghosts.forEach(gh => {
             if (!gh.active || gh.vis < 0.5) return;
@@ -321,8 +334,8 @@
         // viewport box (drawn wrapped)
         ctx.strokeStyle = 'rgba(0,255,0,0.6)';
         ctx.lineWidth = 1;
-        const vx = ox + (cam.x - VIEW / 2) * s, vy = oy + (cam.y - VIEW / 2) * s;
-        for (const dx of [-N * s, 0, N * s]) for (const dy of [-N * s, 0, N * s]) ctx.strokeRect(vx + dx, vy + dy, VIEW * s, VIEW * s);
+        const vh = viewHalf(), vhx = viewHalfX(), vx = ox + (cam.x - vhx) * s, vy = oy + (cam.y - vh) * s;
+        for (const dx of [-N * s, 0, N * s]) for (const dy of [-N * s, 0, N * s]) ctx.strokeRect(vx + dx, vy + dy, 2 * vhx * s, 2 * vh * s);
         if (Math.floor(now / 200) % 2 || G.mode !== 'play') {
             ctx.fillStyle = '#fff';
             ctx.fillRect(ox + G.snake[0].x * s - 1.5, oy + G.snake[0].y * s - 1.5, 4.5, 4.5);
@@ -333,46 +346,54 @@
         ctx.fillRect(ox - 2, oy, 2, size); ctx.fillRect(ox + size, oy, 2, size);
     }
 
+    // On two screens the menus and their text go to the lower screen (dual.js reads `overlay`),
+    // and the top keeps drawing the game alone.
+    let overlay = [];
     function drawOverlay(lines) {
+        overlay = lines;
+        if (DUAL) return;
         // dithered darkening instead of a flat wash
         ctx.fillStyle = 'rgba(0,0,0,0.55)';
-        ctx.fillRect(0, 0, W, canvas.height);
+        ctx.fillRect(0, 0, CW, canvas.height);
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
-        for (let y = 0; y < canvas.height; y += P * 2) ctx.fillRect(0, y, W, P);
+        for (let y = 0; y < canvas.height; y += P * 2) ctx.fillRect(0, y, CW, P);
+        // long overlays start higher, so they stay clear of the skill sheet underneath
+        const top = Math.min(canvas.height / 2 - 72, 420 - (lines.length - 1) * 32);
         lines.forEach(([text, size, color], i) => {
-            pixelText(text, W / 2, canvas.height / 2 - 72 + i * 32, size, color, i === 0 ? '#401010' : '#000');
+            pixelText(text, CW / 2, top + i * 32, size, color, i === 0 ? '#401010' : '#000');
         });
     }
 
     // --- CRT PASS ---
-    const bloomA = document.createElement('canvas'); bloomA.width = bloomA.height = W / 4;
-    const bloomB = document.createElement('canvas'); bloomB.width = bloomB.height = W / 10;
+    const bloomA = document.createElement('canvas'); bloomA.width = CW / 4; bloomA.height = W / 4;
+    const bloomB = document.createElement('canvas'); bloomB.width = CW / 10; bloomB.height = W / 10;
     const bctxA = bloomA.getContext('2d'), bctxB = bloomB.getContext('2d');
     const crtOverlay = document.createElement('canvas');
-    crtOverlay.width = W; crtOverlay.height = canvas.height;
+    crtOverlay.width = CW; crtOverlay.height = canvas.height;
     (() => {
         const o = crtOverlay.getContext('2d');
         // scanlines: darken the lower half of every sub-pixel row
         o.fillStyle = 'rgba(0,0,0,0.28)';
-        for (let y = 1; y < crtOverlay.height; y += P) o.fillRect(0, y, W, 1);
+        for (let y = 1; y < crtOverlay.height; y += P) o.fillRect(0, y, CW, 1);
         // faint aperture-grille tint
         const tints = ['rgba(255,0,0,0.035)', 'rgba(0,255,0,0.035)', 'rgba(0,0,255,0.035)'];
-        for (let x = 0; x < W; x++) { o.fillStyle = tints[x % 3]; o.fillRect(x, 0, 1, crtOverlay.height); }
+        for (let x = 0; x < CW; x++) { o.fillStyle = tints[x % 3]; o.fillRect(x, 0, 1, crtOverlay.height); }
         // vignette
-        const v = o.createRadialGradient(W / 2, W / 2, W * 0.3, W / 2, W / 2, W * 0.75);
+        const v = o.createRadialGradient(CW / 2, W / 2, CW * 0.3, CW / 2, W / 2, CW * 0.75);
         v.addColorStop(0, 'rgba(0,0,0,0)');
         v.addColorStop(1, 'rgba(0,0,0,0.45)');
         o.fillStyle = v;
-        o.fillRect(0, 0, W, crtOverlay.height);
+        o.fillRect(0, 0, CW, crtOverlay.height);
     })();
 
     function present(now) {
         dctx.globalCompositeOperation = 'source-over';
         dctx.globalAlpha = 1;
         dctx.imageSmoothingEnabled = false;
+        dctx.filter = SM.voidmode.filter(now);   // the VOID drains the colour out of everything
         const j = SM.anim.jolt();   // the sighting shock shudders the screen
         dctx.fillStyle = '#000';
-        if (j.x || j.y) dctx.fillRect(0, 0, W, canvas.height);
+        if (j.x || j.y) dctx.fillRect(0, 0, CW, canvas.height);
         dctx.drawImage(scene, j.x, j.y);
         if (!G.opts.crt) return;
 
@@ -385,9 +406,9 @@
         dctx.imageSmoothingEnabled = true;
         dctx.globalCompositeOperation = 'lighter';
         dctx.globalAlpha = 0.28;
-        dctx.drawImage(bloomA, 0, 0, W, canvas.height);
+        dctx.drawImage(bloomA, 0, 0, CW, canvas.height);
         dctx.globalAlpha = 0.32;
-        dctx.drawImage(bloomB, 0, 0, W, canvas.height);
+        dctx.drawImage(bloomB, 0, 0, CW, canvas.height);
 
         dctx.globalCompositeOperation = 'source-over';
         dctx.globalAlpha = 1;
@@ -395,23 +416,32 @@
         // a whisper of flicker and a slow rolling bar
         const barY = (now / 12) % (canvas.height + 120) - 60;
         dctx.fillStyle = 'rgba(255,255,255,0.025)';
-        dctx.fillRect(0, barY, W, 60);
+        dctx.fillRect(0, barY, CW, 60);
         dctx.fillStyle = `rgba(0,0,0,${0.02 + Math.random() * 0.025})`;
-        dctx.fillRect(0, 0, W, canvas.height);
+        dctx.fillRect(0, 0, CW, canvas.height);
     }
 
     // --- DOM HUD ---
     const $ = id => document.getElementById(id);
-    const el = { score: $('score'), hi: $('hi'), lives: $('lives'), time: $('time'), zone: $('zone'), coat: $('coat'),
-                 dash: $('dash'), kin: $('kin'), btnCoat: $('btnCoat'), btnPause: $('btnPause'), btnDash: $('btnDash') };
+    const el = { score: $('score'), hi: $('hi'), hiTier: $('hiTier'), lives: $('lives'), walls: $('walls'), wallsBox: $('wallsBox'), time: $('time'), zone: $('zone'), coat: $('coat'),
+                 dash: $('dash'), kin: $('kin'), btnCoat: $('btnCoat'), btnPause: $('btnPause'), btnDash: $('btnDash'),
+                 lv: $('lv'), evo: $('evo'), skill: $('skill'), lunge: $('lunge'), btnLunge: $('btnLunge'), btnSkill: $('btnSkill'), btnSwap: $('btnSwap'), gun: $('gun') };
     const setText = (e, t) => { if (e && e.innerText !== String(t)) e.innerText = t; };
     const fmtTime = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
     function hud() {
         const coat = SM.coat, dash = SM.dash;
-        setText(el.score, G.score);
+        setText(el.score, G.score + (G.boost > 0 ? ' x2' : ''));
+        el.score.style.color = G.boost > 0 ? '#f55' : '';
         setText(el.hi, G.hi);
+        const tier = G.board ? G.board.tier : SM.scores.boardNow();   // HI is per skill tier (or VOID)
+        setText(el.hiTier, tier.name + ' HI');
+        el.hiTier.style.color = tier.color;
         setText(el.lives, G.lives);
+        const maxB = SM.dial.LEVELS[G.level].bumpers;
+        if (el.wallsBox) el.wallsBox.hidden = maxB === 0;
+        setText(el.walls, '■'.repeat(G.bumpers) + '□'.repeat(Math.max(0, maxB - G.bumpers)));
+        if (el.walls) el.walls.style.color = G.bumpers > 2 ? '#6f6' : G.bumpers > 0 ? '#fa0' : '#f33';
         setText(el.time, fmtTime(G.timeLeft));
         el.time.className = G.timeLeft <= 30000 ? 'low' : '';
         const next = M.STAGES[M.stage + 1];
@@ -421,13 +451,56 @@
         setText(el.dash, dash.busy ? 'DIG!' : dash.cool > 0 ? Math.ceil(dash.cool / 1000) + 's' : 'READY');
         el.dash.style.color = dash.busy ? '#c89c62' : dash.cool > 0 ? '#666' : '';
         el.btnCoat.classList.toggle('on', coat.disguised);
-        el.btnCoat.classList.toggle('cool', coat.cool > 0);
+        el.btnCoat.classList.toggle('cool', coat.cool > 0 && G.mode === 'play');
         el.btnDash.classList.toggle('on', dash.busy);
-        el.btnDash.classList.toggle('cool', dash.cool > 0);
+        el.btnDash.classList.toggle('cool', dash.cool > 0 && G.mode === 'play');
+        const L = SM.lunge;
+        document.documentElement.classList.toggle('lunge', L.unlocked());
+        setText(el.lunge, L.busy ? 'DASH!' : L.cool > 0 ? (L.cool / 1000).toFixed(1) + 's' : 'READY');
+        el.lunge.style.color = L.busy ? '#ffe066' : L.cool > 0 ? '#666' : '';
+        el.btnLunge.classList.toggle('cool', L.cool > 0);
+        setText(el.lv, SM.profile.level() + ' ' + Math.floor(SM.profile.progress() * 100) + '%');
+        setText(el.evo, SM.evo.hudText());
+        const sp = SM.special.selected;
+        setText(el.skill, SM.special.hudText());
+        el.skill.style.color = SM.special.active(sp.id) ? sp.color : SM.profile.charges(sp.id) ? '' : '#666';
+        const menu = G.mode === 'ready' || G.mode === 'over';
+        setText(el.btnSkill, menu ? SM.modes.after().short : sp.short);   // on menus: the mode it switches to
+        document.documentElement.classList.toggle('zombies', G.gameMode === 'zombies');
+        document.documentElement.classList.toggle('idlemode', G.gameMode === 'idle');
+        if (G.gameMode === 'zombies') setText(el.gun, SM.zombies.hudText());
+        el.btnSkill.style.color = menu ? '' : sp.color;
+        el.btnSkill.classList.toggle('cool', !menu && !SM.profile.charges(sp.id) && !SM.special.active(sp.id));
+        setText(el.btnSwap, menu ? 'NAME' : 'SWAP');
         setText(el.btnPause, G.mode === 'paused' ? 'GO' : G.mode === 'over' ? 'AGAIN' : 'PAUSE');
-        setText(el.btnCoat, G.mode === 'ready' || G.mode === 'over' ? 'NEW' : 'COAT');
+        setText(el.btnCoat, menu ? 'NEW' : 'COAT');
+        setText(el.btnDash, menu ? 'LEVEL' : 'DIG');
         const kin = K.state, f = n => (n >= 0 ? ' ' : '−') + Math.abs(n).toFixed(2);
         el.kin.innerHTML = `<span class="v">ẋ (${f(kin.v.x)},${f(kin.v.y)})</span> &nbsp; <span class="a">ẍ (${f(kin.a.x)},${f(kin.a.y)})</span>`;
+    }
+
+    // Where the run landed: its skill tier's board, and the rank if it made the top five.
+    function boardLine() {
+        const b = G.board;
+        if (!b) return ['', 10, '#000'];
+        if (b.rank === 1) return ['NEW BEST ON THE ' + b.tier.name + ' BOARD!', 10, b.tier.color];
+        if (b.rank) return [b.tier.name + ' BOARD #' + b.rank + ' - BEST ' + SM.scores.best(b.tier), 10, b.tier.color];
+        return [b.tier.name + ' BOARD - BEST ' + SM.scores.best(b.tier), 10, '#777'];
+    }
+
+    // This run's dodges and stealth kills, and whether either made its board.
+    function recordLine() {
+        const r = (G.board && G.board.records) || {}, R = G.run;
+        const part = (n, unit, rank) => n + ' ' + unit + (rank === 1 ? ' (BEST!)' : rank ? ' (#' + rank + ')' : '');
+        const any = r.dodges || r.stealth;
+        return [part(R.dodges, 'DODGES', r.dodges) + ' - ' + part(R.stealth, 'STEALTH KILLS', r.stealth), 10, any ? '#9a9aff' : '#777'];
+    }
+
+    function modeLine() {
+        const touch = document.documentElement.classList.contains('touch'), pad = SM.pad.active;
+        const k = pad ? SM.pad.label('mode') : touch ? SM.modes.after().short : 'G';
+        const m = SM.modes.current(), blurb = typeof m.blurb === 'function' ? m.blurb() : m.blurb;
+        return m.title + ' - ' + blurb + '  ' + k + ': MODE';
     }
 
     // --- FRAME ---
@@ -436,9 +509,16 @@
 
         ctx.imageSmoothingEnabled = false;
         ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, W, canvas.height);
+        ctx.fillRect(0, 0, CW, canvas.height);
+
+        // The world is drawn zoomed about the screen centre; the minimap, ladder and overlays are not.
+        ctx.save();
+        const z = cam.z;
+        ctx.setTransform(z, 0, 0, z, CW / 2 * (1 - z), W / 2 * (1 - z));
         drawFloor();
         drawPellets(now);
+        SM.voidmode.drawGates(now);
+        SM.zombies.drawGates(now);
         SM.dash.drawFloor(now);    // holes, ridges and the racing mound sit on the ground...
         fx.draw('floor', now);
 
@@ -451,42 +531,67 @@
         G.ghosts.forEach(g => { if (g.active && g.state === 'aim') drawAim(g, now); });
 
         if (G.opts.derivs && G.mode !== 'over') drawDerivatives();
+        SM.special.drawAura(now);
+        SM.lunge.draw();
+        SM.snakes.draw(now);
         drawSnake(now);
+        SM.zombies.drawBullets();
         G.ghosts.forEach(g => { if (g.active) drawGhost(g, now); });
         fx.draw('over', now);
+        ctx.restore();
+        SM.modes.drawWeather(now);   // a seasonal run's weather drifts over everything
 
         if (G.opts.minimap) drawMinimap(now);
         SM.heal.draw(now);
+        if (G.mode === 'play' || G.mode === 'paused') { SM.missions.draw(now); SM.snakes.hud(now); }
 
         // Hit flash
         if (G.flash > 0) {
             ctx.fillStyle = `rgba(255,0,0,${G.flash * 0.35})`;
-            ctx.fillRect(0, 0, W, canvas.height);
+            ctx.fillRect(0, 0, CW, canvas.height);
             G.flash = Math.max(0, G.flash - dt / 400);
         }
 
+        // Hints name whatever you're holding: a controller (its current bindings), the touch pad, or keys.
         const touch = document.documentElement.classList.contains('touch');
+        const pad = SM.pad.active, B = SM.pad.label;
+        document.documentElement.classList.toggle('gamepad', !!pad);   // a controller in hand hides the touch pad
+        const hint = (p, t, k) => pad ? p : touch ? t : k;
+        const LEVEL_COLOR = { easy: '#6f6', normal: '#FFD700', hard: '#f55' };
         if (G.mode === 'ready') drawOverlay([
             ['SNAKE-MAN', 32, '#FFD700'],
-            [touch ? 'PUSH THE STICK' : 'PRESS AN ARROW KEY', 14, '#0f0'],
+            [hint('PUSH THE STICK OR ' + B('play'), 'PUSH THE STICK', 'PRESS AN ARROW KEY'), 14, '#0f0'],
+            ['LEVEL: ' + G.level.toUpperCase() + '   ' + hint(B('level') + ': LEVEL', 'DIG: LEVEL', 'H: LEVEL'), 10, LEVEL_COLOR[G.level]],
             ['5:00 ON THE CLOCK - MAP #' + G.mapSeed, 10, '#999'],
-            [touch ? 'DIG: BURROW UNDER WALLS' : 'SHIFT: DASH - BURROW UNDER WALLS', 10, '#c89c62'],
-            [touch ? 'COAT: PASS AS A GHOST' : 'ESC: TURNCOAT - PASS AS A GHOST', 10, SM.coat.COAT_COLOR],
-            ['CLIMB THE LADDER TO HEAL', 10, '#ff5577'],
-            touch ? ['NEW: NEW MAP', 10, '#777'] : ['N: NEW MAP   C: CRT   O: SHADOWS', 10, '#777'],
+            [modeLine(), 10, SM.modes.current().color],
+            ['PLAYER ' + SM.profile.name + ' - LV ' + SM.profile.level() + '  ' + hint(B('name') + ': NAME', 'NAME: CHANGE', 'U: NAME'), 10, '#FFD700'],
+            [hint(B('upgrades') + ': UPGRADES', 'PAD > UPGRADES', 'I: UPGRADES') + ' - ' + SM.profile.points() + ' POINT' + (SM.profile.points() === 1 ? '' : 'S') + ' TO SPEND', 10, SM.profile.points() ? '#3f6' : '#6a6'],
+            [hint(B('dig') + ': DIG', 'DIG', 'SHIFT: DIG') + ' - BURROW UNDER WALLS'
+                + (SM.lunge.unlocked() ? '   ' + hint(B('lunge'), 'DASH', 'Z') + ': DASH' : ''), 10, '#c89c62'],
+            [hint(B('coat') + ': TURNCOAT', 'COAT', 'ESC: TURNCOAT') + ' - PASS AS A GHOST', 10, SM.coat.COAT_COLOR],
+            ['CLIMB THE LADDER TO HEAL - FINISH MISSIONS FOR XP', 10, '#ff5577'],
+            [hint(B('skill') + ': SPECIAL SKILL  ' + B('swap') + ': SWAP', 'SKILL / SWAP: SPECIAL SKILLS', 'E: SPECIAL SKILL  Q: SWAP'), 10, SM.special.selected.color],
+            [hint(B('newmap') + ': NEW MAP  ' + B('mode') + ': MODE  ' + B('scores') + ': SCORES  ' + B('menu') + ': CONTROLS', 'NEW: NEW MAP   PAD: CONTROLS', 'N: NEW MAP   K: CONTROLLER   L: SCORES'), 10, '#777'],
         ]);
-        if (G.mode === 'paused') drawOverlay([['PAUSED', 32, '#0f0'], [touch ? 'TAP GO TO RESUME' : 'SPACE TO RESUME', 12, '#999']]);
+        if (G.mode === 'paused') drawOverlay([['PAUSED', 32, '#0f0'],
+            [hint(B('pause') + ' TO RESUME', 'TAP GO TO RESUME', 'SPACE TO RESUME'), 12, '#999'],
+            ['SKILLS GROW WITH USE', 10, '#6a6']]);
         if (G.mode === 'over') drawOverlay([
             [G.overReason, 30, G.overReason === 'TIME UP' ? '#FFD700' : '#f33'],
             ['SCORE ' + G.score, 18, '#FFD700'],
-            ['LADDER RUNG ' + (SM.heal.rung + 1), 10, '#ff5577'],
-            [touch ? 'AGAIN: SAME MAP' : 'ENTER/SPACE: SAME MAP', 10, '#999'],
-            [touch ? 'NEW: NEW MAP' : 'N: NEW MAP', 10, '#999'],
+            ['LADDER RUNG ' + (SM.heal.rung + 1) + ' - ' + SM.missions.done + ' MISSIONS', 10, '#ff5577'],
+            boardLine(),
+            G.result ? ['+' + G.result.xp + ' XP - ' + G.result.name + ' IS LV ' + G.result.level, 10, '#fff'] : ['', 10, '#000'],
+            recordLine(),
+            [hint(B('play') + ': SAME MAP', 'AGAIN: SAME MAP', 'ENTER/SPACE: SAME MAP'), 10, '#999'],
+            [hint(B('newmap') + ': NEW MAP', 'NEW: NEW MAP', 'N: NEW MAP   J: SAVE RUN LOG'), 10, '#999'],
         ]);
+        if (G.mode === 'play') overlay = [];
+        if (G.mode !== 'play' && !DUAL) SM.skills.draw();
 
         present(now);
         hud();
     }
 
-    SM.render = { draw };
+    SM.render = { draw, get overlay() { return overlay; } };
 })();
