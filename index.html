@@ -1,40 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Portfolio, research corpus, and doctrinal reports by JD Renisioure.">
-  <title>JD Renisioure — Portfolio &amp; Research</title>
+  <title>Ternary globe</title>
+  <link rel="icon" href="data:,">
   <style>
-    :root{--ink:#f1efe7;--muted:#aaa79d;--paper:#0a0b0b;--panel:#111413;--acid:#b7ff45;--line:#30352f;--serif:Georgia,"Times New Roman",serif;--mono:"Cascadia Code",Consolas,monospace;--sans:Inter,"Segoe UI",sans-serif}
-    *{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--paper)}body{margin:0;color:var(--ink);background:radial-gradient(60rem 35rem at 75% -10%,#26351b66,transparent 65%),var(--paper);font:16px/1.6 var(--sans)}
-    a{color:inherit}a:focus-visible{outline:2px solid var(--acid);outline-offset:5px}.shell{width:min(1180px,calc(100% - 40px));margin:auto}.noise{position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-    .nav{min-height:82px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid var(--line);font:11px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em}.wordmark{font-size:18px;text-decoration:none;text-transform:lowercase;font-weight:700}.wordmark span,.eyebrow,.index,.code{color:var(--acid)}.navlinks{display:flex;gap:28px}.navlinks a{text-decoration:none;color:var(--muted)}.navlinks a:hover{color:var(--acid)}.issue{justify-self:end;color:var(--muted)}
-    .hero{min-height:650px;padding:clamp(90px,14vw,170px) 0 70px;border-bottom:1px solid var(--line)}.eyebrow,.count,.index,.code,.tags,.small-note{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:11px}.hero h1{margin:55px 0 80px;max-width:1000px;font:clamp(66px,11vw,146px)/.82 var(--serif);letter-spacing:-.065em}.hero h1 em,.corpus h2 em,.footer h2 em{font-weight:400;color:var(--acid)}.hero-bottom{display:grid;grid-template-columns:minmax(280px,540px) auto;gap:60px;align-items:end}.hero-bottom p{margin:0;color:var(--muted);font-size:19px}.arrow-link{justify-self:end;text-decoration:none;font:12px var(--mono);text-transform:uppercase}.arrow-link span{margin-left:16px;color:var(--acid);font-size:22px}
-    .section{padding:100px 0}.section-heading{display:flex;justify-content:space-between;gap:24px;margin-bottom:38px}.section-heading p{margin:0}.count{color:var(--muted)}.project-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}.project-card{min-height:410px;padding:32px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:linear-gradient(145deg,#15181780,transparent)}.project-card h2{margin:52px 0 24px;font:33px/1.05 var(--serif);letter-spacing:-.025em}.body-copy{color:var(--muted)}.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:36px}.tags span{padding:6px 9px;border:1px solid var(--line);color:var(--muted)}
-    .corpus{padding:110px 0;background:#ddd9cd;color:#111410}.corpus-layout{display:grid;grid-template-columns:1fr 1fr;gap:90px;margin-bottom:75px}.corpus h2{margin:24px 0 0;font:clamp(48px,7vw,92px)/.95 var(--serif);letter-spacing:-.045em}.corpus h2 em{color:#567d19}.corpus-intro{align-self:end;font-size:20px}.corpus .small-note{color:#65675f;font-size:10px}.corpus-list{border-top:1px solid #999b92}.corpus-item{display:grid;grid-template-columns:190px 1fr auto;gap:30px;align-items:center;padding:28px 0;border-bottom:1px solid #999b92}.corpus-item .code{color:#567d19}.corpus-item h3{margin:0;font:27px var(--serif)}.corpus-item p{margin:4px 0;color:#65675f}.corpus-item>span{font-size:24px}
-    .reports{padding-bottom:130px}.report-list{border-top:1px solid var(--line)}.report-list article{display:grid;grid-template-columns:100px 1fr 1fr;gap:35px;align-items:baseline;padding:30px 0;border-bottom:1px solid var(--line)}.report-list article>span{color:var(--acid);font:12px var(--mono)}.report-list h3{margin:0;font:28px var(--serif)}.report-list p{margin:0;color:var(--muted)}
-    .footer{display:flex;justify-content:space-between;align-items:end;gap:40px;padding:85px 0;border-top:1px solid var(--line)}.footer h2{margin:20px 0 0;font:clamp(48px,7vw,88px)/.9 var(--serif);letter-spacing:-.04em}.footer>p{color:var(--muted);font:11px/1.8 var(--mono);text-align:right;text-transform:uppercase}
-    @media(max-width:800px){.nav{grid-template-columns:1fr auto}.navlinks{display:none}.issue{font-size:9px}.hero{min-height:auto}.hero-bottom,.corpus-layout{grid-template-columns:1fr}.arrow-link{justify-self:start}.project-grid{grid-template-columns:1fr}.project-card{min-height:auto}.corpus-item{grid-template-columns:1fr auto}.corpus-item>.code{grid-column:1/-1}.report-list article{grid-template-columns:45px 1fr}.report-list p{grid-column:2}.footer{align-items:start;flex-direction:column}.footer>p{text-align:left}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    html, body {
+      margin: 0;
+      background: #05070d;
+      color: #d7e2ee;
+      font: 16px/1.4 sans-serif;
+    }
+    main {
+      display: inline-block;
+      padding: 16px;
+    }
+    canvas {
+      display: block;
+      background: #05070d;
+    }
+    .controls {
+      margin: 12px 0 0;
+    }
+    button {
+      font: inherit;
+      margin: 0 8px 0 0;
+      padding: 8px 14px;
+      color: #102033;
+      background: #d7e2ee;
+      border: 0;
+      border-radius: 4px;
+    }
+    .hint, #readout {
+      margin: 8px 0 0;
+    }
+    #readout {
+      font-family: ui-monospace, monospace;
+    }
   </style>
 </head>
-<body><main><div class="noise" aria-hidden="true"></div>
-  <nav class="nav shell" aria-label="Primary navigation"><a class="wordmark" href="#top">sesefus<span>_</span></a><div class="navlinks"><a href="snake-man.html">snake-man</a><a href="#work">journal-clip</a><a href="#corpus">archive</a><a href="#doctrines">doctrines</a></div><span class="issue">beta 0.3.5 · local-first system</span></nav>
-  <section id="top" class="hero shell"><p class="eyebrow">JD Renisioure / independent systems researcher / builder</p><h1>Time fires.<br><em>Then you speak.</em></h1><div class="hero-bottom"><p>Sesephus is a personal cognitive instrument: a place for raw voice, grounded transcripts, derived semantics, and the research trail that becomes useful later.</p><a class="arrow-link" href="#work">open project index <span>↘</span></a></div></section>
-  <section id="work" class="section shell"><div class="section-heading"><p class="eyebrow">project index</p><p class="count">04 active lines / beta gate open</p></div><div class="project-grid">
-    <article class="project-card"><p class="index">01 / Personal Cognitive Substrate</p><h2>A sovereign system for thought that keeps its own receipts.</h2><p class="body-copy">An offline-first substrate for voice capture, local retrieval, and durable personal context — designed to make reflection operational rather than ornamental.</p><div class="tags"><span>Local-first</span><span>Voice</span><span>Semantic systems</span></div></article>
-    <article class="project-card"><p class="index">02 / Sesephus beta 0.3.5</p><h2>Capture the thought before it escapes the room.</h2><p class="body-copy">The Sesephus journal surface: time fires, then you speak. A voice-first workflow for clips, transcripts, and the usable research that precipitates from them.</p><div class="tags"><span>Beta 0.3.5</span><span>Voice</span><span>Clippers</span></div></article>
-    <article class="project-card"><p class="index">03 / Neurialab</p><h2>Experiments in cognitive interfaces and adaptive tools.</h2><p class="body-copy">A family of working concepts — from NeuriaLexica to Navig8DHD — oriented around helping people build a more legible relationship with attention, memory, and action.</p><div class="tags"><span>Interfaces</span><span>Attention</span><span>R&amp;D</span></div></article>
-    <article class="project-card"><p class="index">04 / Snake-Man</p><h2><a href="snake-man.html">Stray Snake, toroidal edition.</a></h2><p class="body-copy">Play the serpent in the browser. Arrows, WASD, or a gamepad. Dig under walls. Turncoat when the reticle locks. Pick a mode: Classic, Void, Zombies, Idle, or the season's own. There is a 50-mission campaign, and a <a href="snake-man-globe.html">globe edition</a> on Stray Snake's ternary headings.</p><div class="tags"><span>Play</span><span>Browser</span><span>Stray Snake</span><span>Game modes</span></div></article>
-  </div></section>
-  <section id="corpus" class="corpus"><div class="shell corpus-layout"><div><p class="eyebrow">corpus / storage</p><h2>Not a content pile.<br>A working <em>trace.</em></h2></div><div class="corpus-intro"><p>A research corpus for ideas that need time to recombine: technical inquiries, design questions, procedures, and the actionable residue left after a serious conversation.</p><p class="small-note">Raw material stays attributable. Derived semantics remain revisable model output, not ground truth.</p></div></div><div class="shell corpus-list">
-    <article class="corpus-item"><p class="code">RSDC / RSDCE</p><div><h3>Recursive Semantic Drift Correction</h3><p>How a system notices when its meanings have begun to slide.</p></div><span aria-hidden="true">↗</span></article>
-    <article class="corpus-item"><p class="code">TNNN</p><div><h3>Personal cognitive topology</h3><p>Models for thought, relation, and retrieval without flattening a life into a feed.</p></div><span aria-hidden="true">↗</span></article>
-    <article class="corpus-item"><p class="code">Voice systems</p><div><h3>Latency, streaming, interruption</h3><p>The technical edge where a conversation becomes responsive enough to be useful.</p></div><span aria-hidden="true">↗</span></article>
-  </div></section>
-  <section id="doctrines" class="section shell reports"><div class="section-heading"><p class="eyebrow">doctrinal reports</p><p class="count">operating beliefs / tested in public</p></div><div class="report-list">
-    <article><span>01</span><h3>The warehouse model</h3><p>Concrete skills become inventory inside a bounded number of legible domains.</p></article><article><span>02</span><h3>Semantic compression</h3><p>Fewer public concepts than implementation bodies — without sacrificing capability.</p></article><article><span>03</span><h3>The re-memberance ledger</h3><p>A bounded memory model where recall earns retention and stale material yields space.</p></article>
-  </div></section>
-  <footer class="shell footer"><div><p class="eyebrow">Sesephus beta 0.3.5</p><h2>Build the net.<br><em>Keep the signal.</em></h2></div><p>Portfolio · Research corpus · Doctrinal reports<br>© 2026 JD Renisioure</p></footer>
-</main></body></html>
+<body>
+  <main>
+    <canvas id="globe" width="640" height="640"></canvas>
+    <p class="controls">
+      <button type="button" data-action="turn-left">turn-left</button>
+      <button type="button" data-action="advance">advance</button>
+      <button type="button" data-action="turn-right">turn-right</button>
+    </p>
+    <p class="hint">Gold rings travel with the mover. Dashed lines mark collectible troughs. Keys: arrows, Q/E, or Space.</p>
+    <p id="readout"></p>
+  </main>
+  <script src="movement.js"></script>
+  <script src="draw.js"></script>
+</body>
+</html>
