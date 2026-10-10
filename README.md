@@ -9,7 +9,8 @@ Neurialab builds drift-correction instruments; Sesefus is the first.
 ## Structure (canonical hierarchy)
 
 ```
-index.html                 — video-friendly home + cards (direct links)
+index.html                 — Snake-Man, Josiah's build (straysnake bro/levels-missions)
+play/                      — that build's game modules
 pages/
   resume.html              - J.D. Bardwell professional resume + work links
   instruments.html         — unified portfolio (Circadia · Scanner · Sesefus)
